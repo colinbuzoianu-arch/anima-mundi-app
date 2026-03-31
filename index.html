@@ -73,8 +73,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 /* ══════════ COMPANION SCREEN ══════════ */
 #comp{
   background:var(--deep);
-  display:grid;grid-template-rows:auto auto 1fr auto;
-  height:100%;width:100%;align-items:start
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  width:100%;
+  min-height:0;
 }
 
 /* TOP BAR */
@@ -83,7 +86,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
   padding:12px 16px 10px;
   border-bottom:1px solid rgba(255,255,255,.04);
   background:rgba(7,6,13,.85);backdrop-filter:blur(14px);
-  position:sticky;top:0;z-index:20;width:100%
+  position:sticky;top:0;z-index:20;width:100%;
+  flex-shrink:0;
 }
 .tb-l{display:flex;align-items:center;gap:10px}
 .tb-mini-av{width:32px;height:32px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,168,76,.3);flex-shrink:0}
@@ -101,7 +105,8 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
   background:linear-gradient(to bottom,var(--surf) 0%,transparent 100%);
   border-bottom:1px solid rgba(255,255,255,.04);width:100%;
   transition:max-height .4s ease,opacity .4s ease,padding .4s ease;
-  max-height:320px;overflow:hidden
+  max-height:320px;overflow:hidden;
+  flex-shrink:0;
 }
 .av-stage.collapsed{max-height:0;opacity:0;padding:0;pointer-events:none}
 
@@ -141,10 +146,16 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 
 /* CHAT */
 .chat-scroll{
-  overflow-y:auto;padding:16px 14px;
-  display:flex;flex-direction:column;gap:14px;
-  scrollbar-width:thin;scrollbar-color:var(--surf3) transparent;
-  width:100%
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  padding:16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--surf3) transparent;
+  width:100%;
 }
 .chat-scroll::-webkit-scrollbar{width:3px}
 .chat-scroll::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:3px}
@@ -180,10 +191,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 
 /* INPUT */
 .input-zone{padding:10px 13px 18px;background:linear-gradient(to top,var(--deep) 65%,transparent);width:100%;flex-shrink:0}
-.mode-row{display:flex;gap:6px;margin-bottom:9px}
-.mode-btn{flex:1;padding:6px;background:var(--surf);border:1px solid rgba(255,255,255,.06);border-radius:8px;cursor:pointer;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-family:'Cinzel',serif;color:var(--muted);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
-.mode-btn.on{border-color:var(--gold);color:var(--gold);background:var(--gold-faint)}
-
 .txt-row{display:flex;gap:7px;background:var(--surf);border:1px solid rgba(201,168,76,.18);border-radius:11px;padding:3px 3px 3px 13px;transition:border-color .2s}
 .txt-row:focus-within{border-color:rgba(201,168,76,.42);box-shadow:0 0 18px rgba(201,168,76,.05)}
 textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Lato',sans-serif;font-weight:300;font-size:.86rem;line-height:1.5;resize:none;padding:8px 0;min-height:38px;max-height:90px}
@@ -191,13 +198,6 @@ textarea::placeholder{color:var(--muted)}
 .send-btn{width:38px;height:38px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;border-radius:7px;color:var(--deep);cursor:pointer;display:flex;align-items:center;justify-content:center;align-self:flex-end;transition:all .2s;flex-shrink:0}
 .send-btn:hover:not(:disabled){filter:brightness(1.15)}
 .send-btn:disabled{opacity:.3;cursor:not-allowed}
-
-.voice-zone{display:none;flex-direction:column;align-items:center;gap:8px}
-.mic-btn{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:all .25s;box-shadow:0 4px 18px rgba(201,168,76,.22)}
-.mic-btn:hover{transform:scale(1.07)}
-.mic-btn.rec{animation:mp 1s ease-in-out infinite;background:linear-gradient(135deg,#7a1a1a,#b03030)}
-@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(176,48,48,.4)}70%{box-shadow:0 0 0 12px rgba(176,48,48,0)}}
-.mic-lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--muted)}
 
 .qps{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap}
 .qp{font-size:.68rem;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:3px 10px;cursor:pointer;background:transparent;transition:all .2s;white-space:nowrap}
@@ -258,10 +258,6 @@ textarea::placeholder{color:var(--muted)}
 
   <div class="input-zone">
     <button class="stop-btn" id="stopBtn" onclick="stopSpeech()">■ Stop speaking</button>
-    <div class="mode-row">
-      <button class="mode-btn on" id="txtModeBtn" onclick="setMode('text')">✍ Text</button>
-      <button class="mode-btn" id="vcModeBtn" onclick="setMode('voice')">🎙 Voice</button>
-    </div>
     <div class="qps" id="qpRow">
       <button class="qp" onclick="useQ(this)">I carry grief I cannot name</button>
       <button class="qp" onclick="useQ(this)">Why do I suffer?</button>
@@ -270,15 +266,11 @@ textarea::placeholder{color:var(--muted)}
     </div>
     <div id="txtArea">
       <div class="txt-row">
-        <textarea id="uIn" placeholder="Speak your heart…" rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+        <textarea id="uIn" placeholder="Type what is on your heart…" rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
         <button class="send-btn" id="sBtn" onclick="send()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
         </button>
       </div>
-    </div>
-    <div id="vcArea" class="voice-zone">
-      <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙</button>
-      <div class="mic-lbl" id="micLbl">Tap to speak</div>
     </div>
   </div>
 </div>
@@ -301,35 +293,25 @@ mediterranean:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     </radialGradient>
   </defs>
   <rect width="100" height="100" fill="url(#bg_med)"/>
-  <!-- Veil / cloth -->
   <ellipse cx="50" cy="105" rx="42" ry="30" fill="#7a3a2a" opacity=".9"/>
   <path d="M18 65 Q20 45 30 38 Q15 42 12 70 Z" fill="#5a2a1a" opacity=".8"/>
   <path d="M82 65 Q80 45 70 38 Q85 42 88 70 Z" fill="#5a2a1a" opacity=".8"/>
-  <!-- Head veil -->
   <ellipse cx="50" cy="36" rx="28" ry="30" fill="#8b3a28"/>
   <path d="M22 36 Q22 10 50 8 Q78 10 78 36 Q78 20 50 18 Q22 20 22 36Z" fill="#6a2a18"/>
-  <!-- Neck -->
   <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_med)"/>
-  <!-- Face -->
   <ellipse cx="50" cy="46" rx="20" ry="22" fill="url(#skin_med)" class="breathe"/>
-  <!-- Brow shadow -->
   <ellipse cx="50" cy="30" rx="16" ry="6" fill="#a06040" opacity=".4"/>
-  <!-- Eyes -->
   <ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#1a0e08"/>
   <ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#1a0e08"/>
   <ellipse cx="42" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/>
   <ellipse cx="58" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/>
   <ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/>
   <ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/>
-  <!-- Brows -->
   <path d="M37 40 Q42 38.5 47 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/>
   <path d="M53 40 Q58 38.5 63 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/>
-  <!-- Nose -->
   <path d="M50 46 L48 54 Q50 55.5 52 54 Z" fill="#a06040" opacity=".5"/>
-  <!-- Lips -->
   <path d="M44 58 Q50 61 56 58 Q52 63 50 63 Q48 63 44 58Z" fill="#8a3a30"/>
   <path d="M44 58 Q50 56 56 58" stroke="#7a2a22" stroke-width=".8" fill="none"/>
-  <!-- Gold earring -->
   <circle cx="29.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/>
   <circle cx="70.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/>
 </svg>`,
@@ -346,37 +328,27 @@ african:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     </radialGradient>
   </defs>
   <rect width="100" height="100" fill="url(#bg_afr)"/>
-  <!-- Robe -->
   <ellipse cx="50" cy="110" rx="45" ry="30" fill="#1a3a20"/>
   <path d="M20 68 L18 100 L50 100 L82 100 L80 68 Q65 78 50 78 Q35 78 20 68Z" fill="#1a3a20"/>
-  <!-- Neck -->
   <rect x="43" y="63" width="14" height="11" rx="3" fill="url(#skin_afr)"/>
-  <!-- Head -->
   <ellipse cx="50" cy="44" rx="21" ry="24" fill="url(#skin_afr)" class="breathe"/>
-  <!-- Head wrap / crown -->
   <ellipse cx="50" cy="26" rx="21" ry="10" fill="#c9781a"/>
   <rect x="29" y="20" width="42" height="10" rx="4" fill="#b8681a"/>
-  <!-- Tribal marks — subtle -->
   <line x1="35" y1="50" x2="39" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/>
   <line x1="61" y1="50" x2="65" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/>
-  <!-- Eyes -->
   <ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#0d0805"/>
   <ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#0d0805"/>
   <ellipse cx="42" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/>
   <ellipse cx="58" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/>
   <ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
   <ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
-  <!-- Brows -->
   <path d="M37 40 Q42 38.5 47 40" stroke="#0d0805" stroke-width="1.4" fill="none"/>
   <path d="M53 40 Q58 38.5 63 40" stroke="#0d0805" stroke-width="1.4" fill="none"/>
-  <!-- Nose broad -->
   <path d="M47 46 Q50 56 53 46" fill="#301a0c" opacity=".5"/>
   <ellipse cx="47.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/>
   <ellipse cx="52.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/>
-  <!-- Lips -->
   <path d="M43 60 Q50 64 57 60 Q53 66 50 66 Q47 66 43 60Z" fill="#5a2818"/>
   <path d="M43 60 Q50 57.5 57 60" stroke="#4a2010" stroke-width=".8" fill="none"/>
-  <!-- Beaded necklace -->
   <path d="M35 70 Q50 74 65 70" stroke="#c9a84c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
   <circle cx="42" cy="72" r="1.8" fill="#c9781a"/>
   <circle cx="50" cy="73.5" r="2" fill="#c9a84c"/>
@@ -395,40 +367,28 @@ southasian:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     </radialGradient>
   </defs>
   <rect width="100" height="100" fill="url(#bg_sa)"/>
-  <!-- Saffron robe -->
   <ellipse cx="50" cy="110" rx="46" ry="30" fill="#c87820"/>
   <path d="M18 66 L16 100 L84 100 L82 66 Q65 76 50 76 Q35 76 18 66Z" fill="#c87820"/>
-  <!-- Orange drape over shoulder -->
   <path d="M15 60 Q18 50 25 45 L28 66 Z" fill="#e8921a" opacity=".8"/>
-  <!-- Neck -->
   <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_sa)"/>
-  <!-- Head -->
   <ellipse cx="50" cy="44" rx="20" ry="23" fill="url(#skin_sa)" class="breathe"/>
-  <!-- Hair — dark pulled back -->
   <ellipse cx="50" cy="27" rx="20" ry="9" fill="#1a0e05"/>
   <path d="M30 33 Q28 26 30 22 Q35 14 50 14 Q65 14 70 22 Q72 26 70 33" fill="#1a0e05"/>
-  <!-- Bindi -->
   <circle cx="50" cy="35" r="2.5" fill="#c9204a"/>
   <circle cx="50" cy="35" r="1.2" fill="#e83060"/>
-  <!-- Eyes — almond shaped -->
   <path d="M36 44 Q42 41 48 44 Q42 47 36 44Z" fill="#1a0e08"/>
   <path d="M52 44 Q58 41 64 44 Q58 47 52 44Z" fill="#1a0e08"/>
   <ellipse cx="42" cy="44" rx="2.8" ry="2.4" fill="#2a1510" class="blink"/>
   <ellipse cx="58" cy="44" rx="2.8" ry="2.4" fill="#2a1510" class="blink"/>
   <ellipse cx="41.5" cy="43.5" rx="1.1" ry="1.1" fill="white" opacity=".7"/>
   <ellipse cx="57.5" cy="43.5" rx="1.1" ry="1.1" fill="white" opacity=".7"/>
-  <!-- Kohl eyeliner -->
   <path d="M36 44 Q42 47.5 48 44" stroke="#0a0508" stroke-width=".6" fill="none"/>
   <path d="M52 44 Q58 47.5 64 44" stroke="#0a0508" stroke-width=".6" fill="none"/>
-  <!-- Brows -->
   <path d="M37 40.5 Q42 38.8 47 40.5" stroke="#1a0e08" stroke-width="1.1" fill="none"/>
   <path d="M53 40.5 Q58 38.8 63 40.5" stroke="#1a0e08" stroke-width="1.1" fill="none"/>
-  <!-- Nose -->
   <path d="M48.5 46 L47.5 53 Q50 54.5 52.5 53 L51.5 46 Z" fill="#a87050" opacity=".45"/>
-  <!-- Lips -->
   <path d="M44 58 Q50 62 56 58 Q52.5 64 50 64 Q47.5 64 44 58Z" fill="#8a3040"/>
   <path d="M44 58 Q50 56 56 58" stroke="#7a2030" stroke-width=".7" fill="none"/>
-  <!-- Nose ring -->
   <circle cx="53.5" cy="54.5" r="2" fill="none" stroke="#c9a84c" stroke-width=".8"/>
 </svg>`,
 
@@ -444,44 +404,32 @@ shaman:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     </radialGradient>
   </defs>
   <rect width="100" height="100" fill="url(#bg_sh)"/>
-  <!-- Fur/hide cloak -->
   <ellipse cx="50" cy="110" rx="46" ry="28" fill="#2a1e12"/>
   <path d="M18 64 L14 100 L86 100 L82 64 Q65 75 50 75 Q35 75 18 64Z" fill="#2a1e12"/>
-  <!-- Feather detail -->
   <path d="M14 60 Q8 50 12 40 Q14 45 16 52 Z" fill="#3a2810" opacity=".8"/>
   <path d="M12 50 Q6 48 8 42 Q11 46 12 50Z" fill="#7a5a20" opacity=".6"/>
-  <!-- Neck -->
   <rect x="43" y="62" width="14" height="11" rx="3" fill="url(#skin_sh)"/>
-  <!-- Head -->
   <ellipse cx="50" cy="45" rx="20" ry="22" fill="url(#skin_sh)" class="breathe"/>
-  <!-- Hair — long dark -->
   <path d="M30 38 Q28 25 50 20 Q72 25 70 38 Q72 20 50 16 Q28 20 30 38Z" fill="#0d0808"/>
   <path d="M30 45 L26 90" stroke="#0d0808" stroke-width="5" fill="none" stroke-linecap="round"/>
   <path d="M70 45 L74 90" stroke="#0d0808" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <!-- Facial paint — two lines on cheeks -->
   <line x1="33" y1="46" x2="38" y2="55" stroke="#c9601a" stroke-width="1.5" opacity=".8"/>
   <line x1="67" y1="46" x2="62" y2="55" stroke="#c9601a" stroke-width="1.5" opacity=".8"/>
-  <!-- Eyes -->
   <ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#1a0e08"/>
   <ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#1a0e08"/>
   <ellipse cx="42" cy="45" rx="3" ry="2.5" fill="#2a1008" class="blink"/>
   <ellipse cx="58" cy="45" rx="3" ry="2.5" fill="#2a1008" class="blink"/>
   <ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
   <ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
-  <!-- Brows -->
   <path d="M37 41 Q42 39.5 47 41" stroke="#0d0808" stroke-width="1.3" fill="none"/>
   <path d="M53 41 Q58 39.5 63 41" stroke="#0d0808" stroke-width="1.3" fill="none"/>
-  <!-- Nose -->
   <path d="M48 47 L47 54 Q50 55.5 53 54 L52 47 Z" fill="#9a5c30" opacity=".45"/>
-  <!-- Lips -->
   <path d="M44 59 Q50 63 56 59 Q52 65 50 65 Q48 65 44 59Z" fill="#6a3020"/>
   <path d="M44 59 Q50 57 56 59" stroke="#5a2018" stroke-width=".7" fill="none"/>
-  <!-- Bone/bead necklace -->
   <path d="M34 70 Q50 74 66 70" stroke="#c8b870" stroke-width="1.5" fill="none"/>
   <circle cx="42" cy="72" r="2" fill="#e8d890" opacity=".7"/>
   <circle cx="50" cy="73.5" r="2.2" fill="#e8d890" opacity=".8"/>
   <circle cx="58" cy="72" r="2" fill="#e8d890" opacity=".7"/>
-  <!-- Headband -->
   <path d="M30 36 Q50 32 70 36" stroke="#8a5030" stroke-width="2" fill="none"/>
   <circle cx="50" cy="33" r="3" fill="#c9601a" opacity=".8"/>
 </svg>`,
@@ -498,36 +446,24 @@ eastern:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     </radialGradient>
   </defs>
   <rect width="100" height="100" fill="url(#bg_ea)"/>
-  <!-- Hanfu/robe -->
   <ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a2840"/>
   <path d="M18 65 L16 100 L84 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a2840"/>
-  <!-- Collar detail -->
   <path d="M38 66 L50 72 L62 66" stroke="#c9a84c" stroke-width=".8" fill="none"/>
-  <!-- Neck -->
   <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_ea)"/>
-  <!-- Head -->
   <ellipse cx="50" cy="45" rx="20" ry="22" fill="url(#skin_ea)" class="breathe"/>
-  <!-- Long white beard -->
   <path d="M36 58 Q38 70 42 80 Q50 85 58 80 Q62 70 64 58 Q55 64 50 64 Q45 64 36 58Z" fill="#e8e0d0" opacity=".9"/>
-  <!-- White hair — pulled back -->
   <path d="M30 38 Q28 22 50 18 Q72 22 70 38" fill="#d0c8b8"/>
-  <!-- Fu manchu mustache subtle -->
   <path d="M44 57 Q50 59 56 57 Q54 61 50 62 Q46 61 44 57Z" fill="#c8c0a8" opacity=".7"/>
-  <!-- Eyes — narrow wise -->
   <path d="M37 45 Q42 42.5 47 45 Q42 47 37 45Z" fill="#1a0e08"/>
   <path d="M53 45 Q58 42.5 63 45 Q58 47 53 45Z" fill="#1a0e08"/>
   <ellipse cx="42" cy="44.8" rx="2.5" ry="1.8" fill="#2a1a0e" class="blink"/>
   <ellipse cx="58" cy="44.8" rx="2.5" ry="1.8" fill="#2a1a0e" class="blink"/>
   <ellipse cx="41.5" cy="44.3" rx="1" ry=".9" fill="white" opacity=".6"/>
   <ellipse cx="57.5" cy="44.3" rx="1" ry=".9" fill="white" opacity=".6"/>
-  <!-- Brows — arched, white -->
   <path d="M37 41 Q42 39 47 41" stroke="#b8b0a0" stroke-width="1.1" fill="none"/>
   <path d="M53 41 Q58 39 63 41" stroke="#b8b0a0" stroke-width="1.1" fill="none"/>
-  <!-- Nose -->
   <path d="M48.5 46 L47.5 54 Q50 55 52.5 54 L51.5 46Z" fill="#b88a50" opacity=".4"/>
-  <!-- Lips, subtle under mustache -->
   <path d="M45 58.5 Q50 60 55 58.5" stroke="#8a6040" stroke-width=".8" fill="none"/>
-  <!-- Scholar cap -->
   <rect x="32" y="24" width="36" height="8" rx="3" fill="#1a2840"/>
   <rect x="28" y="28" width="44" height="4" rx="2" fill="#152030"/>
 </svg>`,
@@ -544,36 +480,26 @@ nordic:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     </radialGradient>
   </defs>
   <rect width="100" height="100" fill="url(#bg_no)"/>
-  <!-- Cloak -->
   <ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a1820"/>
   <path d="M18 65 L14 100 L86 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a1820"/>
-  <!-- Brooch -->
   <circle cx="50" cy="68" r="3.5" fill="#c9a84c" opacity=".8"/>
   <circle cx="50" cy="68" r="2" fill="#e8d050" opacity=".9"/>
-  <!-- Neck -->
   <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_no)"/>
-  <!-- Head -->
   <ellipse cx="50" cy="45" rx="21" ry="22" fill="url(#skin_no)" class="breathe"/>
-  <!-- Blonde/silver hair loose -->
   <path d="M29 40 Q26 20 50 16 Q74 20 71 40" fill="#c8b870" opacity=".9"/>
   <path d="M29 45 L24 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/>
   <path d="M71 45 L76 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/>
-  <!-- Eyes — light blue/grey -->
   <ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/>
   <ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/>
   <ellipse cx="42" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/>
   <ellipse cx="58" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/>
   <ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/>
   <ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/>
-  <!-- Brows — blonde -->
   <path d="M37 41 Q42 39.5 47 41" stroke="#a89840" stroke-width="1" fill="none"/>
   <path d="M53 41 Q58 39.5 63 41" stroke="#a89840" stroke-width="1" fill="none"/>
-  <!-- Nose — straight nordic -->
   <path d="M50 46 L49 55 Q50 56 51 55 L50 46Z" fill="#c8a888" opacity=".5"/>
-  <!-- Lips — pale pink -->
   <path d="M44 59 Q50 63 56 59 Q52.5 65 50 65 Q47.5 65 44 59Z" fill="#b88080"/>
   <path d="M44 59 Q50 57.5 56 59" stroke="#a87070" stroke-width=".7" fill="none"/>
-  <!-- Rune tattoo on forehead subtle -->
   <text x="50" y="35" text-anchor="middle" font-size="5" fill="#c9a84c" opacity=".3" font-family="serif">ᚠ</text>
 </svg>`
 };
@@ -632,7 +558,7 @@ Total: 200-380 words. Luminous, warm, never preachy.`;
 // ════════════════════════════════════
 // STATE
 // ════════════════════════════════════
-let curGuide=null,curVoice=null,history=[],loading=false,inputMode='text',avShown=true,recog=null,recording=false;
+let curGuide=null,curVoice=null,history=[],loading=false,avShown=true;
 const synth=window.speechSynthesis;
 
 // ════════════════════════════════════
@@ -684,11 +610,8 @@ function enter(){
   document.getElementById('sel').classList.add('hidden');
   document.getElementById('comp').classList.remove('hidden');
 
-  // set top bar
   document.getElementById('tbNm').textContent=curGuide.title+' · '+curGuide.label;
   document.getElementById('tbMini').innerHTML=PORTRAITS[curGuide.id];
-
-  // set big portrait
   document.getElementById('portraitBig').innerHTML=PORTRAITS[curGuide.id];
 
   appendWelcome();
@@ -741,21 +664,20 @@ function addUser(text){
 }
 
 function fmtAI(text){
-  // render [SOURCE: x]\n"quote" as citation blocks
   let out=text.replace(/\[SOURCE:\s*([^\]]+)\]\s*\n?"([^"]+)"/g,(m,src,q)=>
     `<div class="cit"><div class="cit-src">${src.trim()}</div><div class="cit-txt">"${q}"</div></div>`
   );
-  // also handle without newline
+
   out=out.replace(/\[SOURCE:\s*([^\]]+)\]([^<\n]*)/g,(m,src,rest)=>{
     if(rest.trim()) return `<div class="cit"><div class="cit-src">${src.trim()}</div><div class="cit-txt">${rest.trim()}</div></div>`;
     return `<span class="ttag">${src.trim()}</span>`;
   });
+
   out=out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
          .replace(/\*(.*?)\*/g,'<em>$1</em>')
          .replace(/\n\n/g,'</p><p style="margin-top:8px">')
          .replace(/\n/g,'<br>');
 
-  // extract tradition tags
   const tags=[];
   if(/sufi|rumi|hafiz/i.test(text))tags.push('Sufism');
   if(/buddha|zen|dharma|tibetan/i.test(text))tags.push('Buddhism');
@@ -784,7 +706,10 @@ function showThink(){
   document.getElementById('chatScroll').appendChild(d);scrollB();
 }
 function rmThink(){const e=document.getElementById('think');if(e)e.remove();}
-function scrollB(){const c=document.getElementById('chatScroll');c.scrollTop=c.scrollHeight;}
+function scrollB(){
+  const c=document.getElementById('chatScroll');
+  requestAnimationFrame(()=>{ c.scrollTop=c.scrollHeight; });
+}
 
 // ════════════════════════════════════
 // SEND
@@ -800,45 +725,80 @@ async function send(override){
   addUser(txt);
   history.push({role:'user',content:txt});
   showThink();
+
   try{
     const sys=SYS_BASE+'\n\nYOUR PERSONA:\n'+curGuide.prompt;
     const r=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:history})
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:sys,
+        messages:history
+      })
     });
+
     const data=await r.json();
     rmThink();
+
     const reply=data.content?.map(b=>b.text||'').join('')||'I am here with you. Please try again.';
     addAI(reply);
     history.push({role:'assistant',content:reply});
-    // auto-speak if face shown
+
     if(avShown)doSpeak(stripCit(reply));
-  }catch(e){rmThink();addAI('The connection was interrupted. I am still here — please try again.');}
+  }catch(e){
+    rmThink();
+    addAI('The connection was interrupted. I am still here — please try again.');
+  }
+
   loading=false;
   document.getElementById('sBtn').disabled=false;
+  scrollB();
 }
 
 // ════════════════════════════════════
 // SPEECH OUTPUT
 // ════════════════════════════════════
-function stripCit(t){return t.replace(/\[SOURCE:[^\]]+\][^<\n]*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/\n+/g,' ').trim();}
+function stripCit(t){
+  return t.replace(/\[SOURCE:[^\]]+\][^<\n]*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/\n+/g,' ').trim();
+}
 
 function doSpeak(text){
   if(!synth||!curVoice)return;
   synth.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  u.lang='en-US';u.rate=curVoice.rate;u.pitch=curVoice.pitch;
+  u.lang='en-US';
+  u.rate=curVoice.rate;
+  u.pitch=curVoice.pitch;
   const vs=synth.getVoices();
   const eng=vs.filter(v=>v.lang.startsWith('en'));
   if(eng.length)u.voice=eng[0];
+
   const pw=document.getElementById('portraitWrap');
   const vb=document.getElementById('vBars');
   const lbl=document.getElementById('avLbl');
   const sb=document.getElementById('stopBtn');
-  u.onstart=()=>{pw.classList.add('speaking');vb.classList.add('speaking-active');lbl.textContent='Speaking…';sb.classList.add('vis');}
-  u.onend=()=>{pw.classList.remove('speaking');vb.classList.remove('speaking-active');lbl.textContent='Present with you';sb.classList.remove('vis');}
-  u.onerror=()=>{pw.classList.remove('speaking');vb.classList.remove('speaking-active');lbl.textContent='Present with you';sb.classList.remove('vis');}
+
+  u.onstart=()=>{
+    pw.classList.add('speaking');
+    vb.classList.add('speaking-active');
+    lbl.textContent='Speaking…';
+    sb.classList.add('vis');
+  };
+  u.onend=()=>{
+    pw.classList.remove('speaking');
+    vb.classList.remove('speaking-active');
+    lbl.textContent='Present with you';
+    sb.classList.remove('vis');
+  };
+  u.onerror=()=>{
+    pw.classList.remove('speaking');
+    vb.classList.remove('speaking-active');
+    lbl.textContent='Present with you';
+    sb.classList.remove('vis');
+  };
+
   synth.speak(u);
 }
 
@@ -851,41 +811,8 @@ function stopSpeech(){
 }
 
 // ════════════════════════════════════
-// VOICE INPUT
-// ════════════════════════════════════
-function toggleMic(){
-  if(!('webkitSpeechRecognition'in window||'SpeechRecognition'in window)){alert('Speech recognition requires Chrome or Safari.');return;}
-  if(recording){stopRec();return;}startRec();
-}
-function startRec(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recog=new SR();recog.lang='en-US';recog.continuous=false;recog.interimResults=false;
-  recog.onresult=e=>{send(e.results[0][0].transcript);stopRec();};
-  recog.onerror=stopRec;recog.onend=()=>{if(recording)stopRec();};
-  recog.start();recording=true;
-  document.getElementById('micBtn').classList.add('rec');
-  document.getElementById('micBtn').textContent='⏹';
-  document.getElementById('micLbl').textContent='Listening…';
-}
-function stopRec(){
-  if(recog)recog.stop();recording=false;
-  document.getElementById('micBtn').classList.remove('rec');
-  document.getElementById('micBtn').textContent='🎙';
-  document.getElementById('micLbl').textContent='Tap to speak';
-}
-
-// ════════════════════════════════════
 // UI CONTROLS
 // ════════════════════════════════════
-function setMode(m){
-  inputMode=m;
-  document.getElementById('txtModeBtn').classList.toggle('on',m==='text');
-  document.getElementById('vcModeBtn').classList.toggle('on',m==='voice');
-  document.getElementById('txtArea').style.display=m==='text'?'block':'none';
-  const va=document.getElementById('vcArea');
-  va.style.display=m==='voice'?'flex':'none';
-}
-
 function toggleAv(){
   avShown=!avShown;
   document.getElementById('avStage').classList.toggle('collapsed',!avShown);
@@ -894,7 +821,7 @@ function toggleAv(){
 }
 
 function goBack(){
-  stopSpeech();if(recog)recog.stop();
+  stopSpeech();
   history=[];
   document.getElementById('chatScroll').innerHTML='';
   document.getElementById('qpRow').style.display='flex';
@@ -905,16 +832,31 @@ function goBack(){
 }
 
 function useQ(btn){
-  if(inputMode==='voice'){send(btn.textContent);return;}
-  const t=document.getElementById('uIn');t.value=btn.textContent;ar(t);t.focus();
+  const t=document.getElementById('uIn');
+  t.value=btn.textContent;
+  ar(t);
+  t.focus();
   document.getElementById('qpRow').style.display='none';
 }
-function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
-function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,90)+'px';}
+
+function hk(e){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    send();
+  }
+}
+
+function ar(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,90)+'px';
+}
 
 // INIT
 buildSelect();
-if(synth){synth.getVoices();window.addEventListener('load',()=>speechSynthesis.getVoices());}
+if(synth){
+  synth.getVoices();
+  window.addEventListener('load',()=>speechSynthesis.getVoices());
+}
 </script>
 </body>
 </html>
