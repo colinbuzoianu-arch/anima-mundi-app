@@ -52,14 +52,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .av-nm{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
 .av-role{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;color:var(--muted);line-height:1.3}
 
-/* VOICE GRID */
-.voice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:540px;margin-top:14px}
-.v-btn{background:var(--surf);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .2s}
-.v-btn:hover,.v-btn.picked{border-color:var(--gold);background:var(--gold-faint)}
-.v-ico{font-size:1.2rem;display:block;margin-bottom:3px}
-.v-nm{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:'Cinzel',serif}
-.v-tone{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--muted);margin-top:1px}
-
 .enter-btn{
   margin-top:30px;padding:13px 44px;
   background:linear-gradient(135deg,var(--gold-d),var(--gold));
@@ -126,22 +118,6 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 @keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.015) translateY(-1px)}}
 .blink{animation:blink-anim 6s ease-in-out infinite}
 @keyframes blink-anim{0%,94%,100%{transform:scaleY(1)}96%,98%{transform:scaleY(0.08)}}
-
-/* speaking state — applied via JS */
-.speaking .portrait-bg{box-shadow:0 0 50px rgba(201,168,76,.25),0 0 100px rgba(201,168,76,.1)}
-.speaking .p-ring1{animation:pr-speak 0.6s ease-in-out infinite}
-.speaking .p-ring2{animation:pr-speak 0.6s ease-in-out infinite .15s}
-@keyframes pr-speak{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.05);opacity:.6}}
-
-/* voice bars */
-.voice-bars{display:flex;align-items:center;gap:3px;height:18px;margin-top:10px}
-.vb{width:3px;border-radius:2px;background:var(--gold);height:3px;transition:height .1s}
-.speaking-active .vb:nth-child(1){animation:vbar .7s ease-in-out infinite}
-.speaking-active .vb:nth-child(2){animation:vbar .7s ease-in-out infinite .1s}
-.speaking-active .vb:nth-child(3){animation:vbar .7s ease-in-out infinite .2s}
-.speaking-active .vb:nth-child(4){animation:vbar .7s ease-in-out infinite .1s}
-.speaking-active .vb:nth-child(5){animation:vbar .7s ease-in-out infinite 0s}
-@keyframes vbar{0%,100%{height:3px}50%{height:16px}}
 .av-lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--muted);margin-top:6px}
 
 /* CHAT */
@@ -202,16 +178,10 @@ textarea::placeholder{color:var(--muted)}
 .qps{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap}
 .qp{font-size:.68rem;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:3px 10px;cursor:pointer;background:transparent;transition:all .2s;white-space:nowrap}
 .qp:hover{color:var(--gold-l);border-color:rgba(201,168,76,.28);background:var(--gold-faint)}
-
-/* stop speech btn */
-.stop-btn{display:none;margin:0 auto 8px;padding:5px 14px;background:transparent;border:1px solid rgba(176,48,48,.4);border-radius:20px;color:#c07070;font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
-.stop-btn:hover{border-color:#b03030;color:#e08080}
-.stop-btn.vis{display:block}
 </style>
 </head>
 <body>
 
-<!-- ══ SCREEN 1: SELECT ══ -->
 <div class="screen" id="sel">
   <div class="logo">
     <span class="logo-sym">✦</span>
@@ -220,12 +190,9 @@ textarea::placeholder{color:var(--muted)}
   </div>
   <div class="sec-label">Select a Guide</div>
   <div class="avatar-grid" id="avGrid"></div>
-  <div class="sec-label" style="margin-top:24px">Choose a Voice</div>
-  <div class="voice-grid" id="vGrid"></div>
   <button class="enter-btn" id="enterBtn" disabled onclick="enter()">Enter the Sanctuary</button>
 </div>
 
-<!-- ══ SCREEN 2: COMPANION ══ -->
 <div class="screen hidden" id="comp">
   <div class="top-bar">
     <div class="tb-l">
@@ -247,17 +214,12 @@ textarea::placeholder{color:var(--muted)}
       <div class="p-ring2"></div>
       <div class="portrait-bg" id="portraitBig"></div>
     </div>
-    <div class="voice-bars" id="vBars">
-      <div class="vb"></div><div class="vb"></div><div class="vb"></div>
-      <div class="vb"></div><div class="vb"></div>
-    </div>
     <div class="av-lbl" id="avLbl">Present with you</div>
   </div>
 
   <div class="chat-scroll" id="chatScroll"></div>
 
   <div class="input-zone">
-    <button class="stop-btn" id="stopBtn" onclick="stopSpeech()">■ Stop speaking</button>
     <div class="qps" id="qpRow">
       <button class="qp" onclick="useQ(this)">I carry grief I cannot name</button>
       <button class="qp" onclick="useQ(this)">Why do I suffer?</button>
@@ -276,237 +238,15 @@ textarea::placeholder{color:var(--muted)}
 </div>
 
 <script>
-// ════════════════════════════════════
-// SVG PORTRAITS — 6 illustrated faces
-// ════════════════════════════════════
 const PORTRAITS = {
-
-mediterranean:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bg_med" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#2a1a0e"/>
-      <stop offset="100%" stop-color="#0f0a06"/>
-    </radialGradient>
-    <radialGradient id="skin_med" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#d4956a"/>
-      <stop offset="100%" stop-color="#b87248"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" fill="url(#bg_med)"/>
-  <ellipse cx="50" cy="105" rx="42" ry="30" fill="#7a3a2a" opacity=".9"/>
-  <path d="M18 65 Q20 45 30 38 Q15 42 12 70 Z" fill="#5a2a1a" opacity=".8"/>
-  <path d="M82 65 Q80 45 70 38 Q85 42 88 70 Z" fill="#5a2a1a" opacity=".8"/>
-  <ellipse cx="50" cy="36" rx="28" ry="30" fill="#8b3a28"/>
-  <path d="M22 36 Q22 10 50 8 Q78 10 78 36 Q78 20 50 18 Q22 20 22 36Z" fill="#6a2a18"/>
-  <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_med)"/>
-  <ellipse cx="50" cy="46" rx="20" ry="22" fill="url(#skin_med)" class="breathe"/>
-  <ellipse cx="50" cy="30" rx="16" ry="6" fill="#a06040" opacity=".4"/>
-  <ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#1a0e08"/>
-  <ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#1a0e08"/>
-  <ellipse cx="42" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/>
-  <ellipse cx="58" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/>
-  <ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/>
-  <ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/>
-  <path d="M37 40 Q42 38.5 47 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/>
-  <path d="M53 40 Q58 38.5 63 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/>
-  <path d="M50 46 L48 54 Q50 55.5 52 54 Z" fill="#a06040" opacity=".5"/>
-  <path d="M44 58 Q50 61 56 58 Q52 63 50 63 Q48 63 44 58Z" fill="#8a3a30"/>
-  <path d="M44 58 Q50 56 56 58" stroke="#7a2a22" stroke-width=".8" fill="none"/>
-  <circle cx="29.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/>
-  <circle cx="70.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/>
-</svg>`,
-
-african:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bg_afr" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0e1a10"/>
-      <stop offset="100%" stop-color="#060d08"/>
-    </radialGradient>
-    <radialGradient id="skin_afr" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#4a2e18"/>
-      <stop offset="100%" stop-color="#301a0c"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" fill="url(#bg_afr)"/>
-  <ellipse cx="50" cy="110" rx="45" ry="30" fill="#1a3a20"/>
-  <path d="M20 68 L18 100 L50 100 L82 100 L80 68 Q65 78 50 78 Q35 78 20 68Z" fill="#1a3a20"/>
-  <rect x="43" y="63" width="14" height="11" rx="3" fill="url(#skin_afr)"/>
-  <ellipse cx="50" cy="44" rx="21" ry="24" fill="url(#skin_afr)" class="breathe"/>
-  <ellipse cx="50" cy="26" rx="21" ry="10" fill="#c9781a"/>
-  <rect x="29" y="20" width="42" height="10" rx="4" fill="#b8681a"/>
-  <line x1="35" y1="50" x2="39" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/>
-  <line x1="61" y1="50" x2="65" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/>
-  <ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#0d0805"/>
-  <ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#0d0805"/>
-  <ellipse cx="42" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/>
-  <ellipse cx="58" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/>
-  <ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
-  <ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
-  <path d="M37 40 Q42 38.5 47 40" stroke="#0d0805" stroke-width="1.4" fill="none"/>
-  <path d="M53 40 Q58 38.5 63 40" stroke="#0d0805" stroke-width="1.4" fill="none"/>
-  <path d="M47 46 Q50 56 53 46" fill="#301a0c" opacity=".5"/>
-  <ellipse cx="47.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/>
-  <ellipse cx="52.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/>
-  <path d="M43 60 Q50 64 57 60 Q53 66 50 66 Q47 66 43 60Z" fill="#5a2818"/>
-  <path d="M43 60 Q50 57.5 57 60" stroke="#4a2010" stroke-width=".8" fill="none"/>
-  <path d="M35 70 Q50 74 65 70" stroke="#c9a84c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <circle cx="42" cy="72" r="1.8" fill="#c9781a"/>
-  <circle cx="50" cy="73.5" r="2" fill="#c9a84c"/>
-  <circle cx="58" cy="72" r="1.8" fill="#c9781a"/>
-</svg>`,
-
-southasian:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bg_sa" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#1a0e20"/>
-      <stop offset="100%" stop-color="#0a070e"/>
-    </radialGradient>
-    <radialGradient id="skin_sa" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#c8956a"/>
-      <stop offset="100%" stop-color="#a87050"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" fill="url(#bg_sa)"/>
-  <ellipse cx="50" cy="110" rx="46" ry="30" fill="#c87820"/>
-  <path d="M18 66 L16 100 L84 100 L82 66 Q65 76 50 76 Q35 76 18 66Z" fill="#c87820"/>
-  <path d="M15 60 Q18 50 25 45 L28 66 Z" fill="#e8921a" opacity=".8"/>
-  <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_sa)"/>
-  <ellipse cx="50" cy="44" rx="20" ry="23" fill="url(#skin_sa)" class="breathe"/>
-  <ellipse cx="50" cy="27" rx="20" ry="9" fill="#1a0e05"/>
-  <path d="M30 33 Q28 26 30 22 Q35 14 50 14 Q65 14 70 22 Q72 26 70 33" fill="#1a0e05"/>
-  <circle cx="50" cy="35" r="2.5" fill="#c9204a"/>
-  <circle cx="50" cy="35" r="1.2" fill="#e83060"/>
-  <path d="M36 44 Q42 41 48 44 Q42 47 36 44Z" fill="#1a0e08"/>
-  <path d="M52 44 Q58 41 64 44 Q58 47 52 44Z" fill="#1a0e08"/>
-  <ellipse cx="42" cy="44" rx="2.8" ry="2.4" fill="#2a1510" class="blink"/>
-  <ellipse cx="58" cy="44" rx="2.8" ry="2.4" fill="#2a1510" class="blink"/>
-  <ellipse cx="41.5" cy="43.5" rx="1.1" ry="1.1" fill="white" opacity=".7"/>
-  <ellipse cx="57.5" cy="43.5" rx="1.1" ry="1.1" fill="white" opacity=".7"/>
-  <path d="M36 44 Q42 47.5 48 44" stroke="#0a0508" stroke-width=".6" fill="none"/>
-  <path d="M52 44 Q58 47.5 64 44" stroke="#0a0508" stroke-width=".6" fill="none"/>
-  <path d="M37 40.5 Q42 38.8 47 40.5" stroke="#1a0e08" stroke-width="1.1" fill="none"/>
-  <path d="M53 40.5 Q58 38.8 63 40.5" stroke="#1a0e08" stroke-width="1.1" fill="none"/>
-  <path d="M48.5 46 L47.5 53 Q50 54.5 52.5 53 L51.5 46 Z" fill="#a87050" opacity=".45"/>
-  <path d="M44 58 Q50 62 56 58 Q52.5 64 50 64 Q47.5 64 44 58Z" fill="#8a3040"/>
-  <path d="M44 58 Q50 56 56 58" stroke="#7a2030" stroke-width=".7" fill="none"/>
-  <circle cx="53.5" cy="54.5" r="2" fill="none" stroke="#c9a84c" stroke-width=".8"/>
-</svg>`,
-
-shaman:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bg_sh" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0e1518"/>
-      <stop offset="100%" stop-color="#060a0d"/>
-    </radialGradient>
-    <radialGradient id="skin_sh" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#b87848"/>
-      <stop offset="100%" stop-color="#9a5c30"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" fill="url(#bg_sh)"/>
-  <ellipse cx="50" cy="110" rx="46" ry="28" fill="#2a1e12"/>
-  <path d="M18 64 L14 100 L86 100 L82 64 Q65 75 50 75 Q35 75 18 64Z" fill="#2a1e12"/>
-  <path d="M14 60 Q8 50 12 40 Q14 45 16 52 Z" fill="#3a2810" opacity=".8"/>
-  <path d="M12 50 Q6 48 8 42 Q11 46 12 50Z" fill="#7a5a20" opacity=".6"/>
-  <rect x="43" y="62" width="14" height="11" rx="3" fill="url(#skin_sh)"/>
-  <ellipse cx="50" cy="45" rx="20" ry="22" fill="url(#skin_sh)" class="breathe"/>
-  <path d="M30 38 Q28 25 50 20 Q72 25 70 38 Q72 20 50 16 Q28 20 30 38Z" fill="#0d0808"/>
-  <path d="M30 45 L26 90" stroke="#0d0808" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <path d="M70 45 L74 90" stroke="#0d0808" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <line x1="33" y1="46" x2="38" y2="55" stroke="#c9601a" stroke-width="1.5" opacity=".8"/>
-  <line x1="67" y1="46" x2="62" y2="55" stroke="#c9601a" stroke-width="1.5" opacity=".8"/>
-  <ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#1a0e08"/>
-  <ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#1a0e08"/>
-  <ellipse cx="42" cy="45" rx="3" ry="2.5" fill="#2a1008" class="blink"/>
-  <ellipse cx="58" cy="45" rx="3" ry="2.5" fill="#2a1008" class="blink"/>
-  <ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
-  <ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/>
-  <path d="M37 41 Q42 39.5 47 41" stroke="#0d0808" stroke-width="1.3" fill="none"/>
-  <path d="M53 41 Q58 39.5 63 41" stroke="#0d0808" stroke-width="1.3" fill="none"/>
-  <path d="M48 47 L47 54 Q50 55.5 53 54 L52 47 Z" fill="#9a5c30" opacity=".45"/>
-  <path d="M44 59 Q50 63 56 59 Q52 65 50 65 Q48 65 44 59Z" fill="#6a3020"/>
-  <path d="M44 59 Q50 57 56 59" stroke="#5a2018" stroke-width=".7" fill="none"/>
-  <path d="M34 70 Q50 74 66 70" stroke="#c8b870" stroke-width="1.5" fill="none"/>
-  <circle cx="42" cy="72" r="2" fill="#e8d890" opacity=".7"/>
-  <circle cx="50" cy="73.5" r="2.2" fill="#e8d890" opacity=".8"/>
-  <circle cx="58" cy="72" r="2" fill="#e8d890" opacity=".7"/>
-  <path d="M30 36 Q50 32 70 36" stroke="#8a5030" stroke-width="2" fill="none"/>
-  <circle cx="50" cy="33" r="3" fill="#c9601a" opacity=".8"/>
-</svg>`,
-
-eastern:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bg_ea" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#0d1520"/>
-      <stop offset="100%" stop-color="#060a0e"/>
-    </radialGradient>
-    <radialGradient id="skin_ea" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#d4a870"/>
-      <stop offset="100%" stop-color="#b88a50"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" fill="url(#bg_ea)"/>
-  <ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a2840"/>
-  <path d="M18 65 L16 100 L84 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a2840"/>
-  <path d="M38 66 L50 72 L62 66" stroke="#c9a84c" stroke-width=".8" fill="none"/>
-  <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_ea)"/>
-  <ellipse cx="50" cy="45" rx="20" ry="22" fill="url(#skin_ea)" class="breathe"/>
-  <path d="M36 58 Q38 70 42 80 Q50 85 58 80 Q62 70 64 58 Q55 64 50 64 Q45 64 36 58Z" fill="#e8e0d0" opacity=".9"/>
-  <path d="M30 38 Q28 22 50 18 Q72 22 70 38" fill="#d0c8b8"/>
-  <path d="M44 57 Q50 59 56 57 Q54 61 50 62 Q46 61 44 57Z" fill="#c8c0a8" opacity=".7"/>
-  <path d="M37 45 Q42 42.5 47 45 Q42 47 37 45Z" fill="#1a0e08"/>
-  <path d="M53 45 Q58 42.5 63 45 Q58 47 53 45Z" fill="#1a0e08"/>
-  <ellipse cx="42" cy="44.8" rx="2.5" ry="1.8" fill="#2a1a0e" class="blink"/>
-  <ellipse cx="58" cy="44.8" rx="2.5" ry="1.8" fill="#2a1a0e" class="blink"/>
-  <ellipse cx="41.5" cy="44.3" rx="1" ry=".9" fill="white" opacity=".6"/>
-  <ellipse cx="57.5" cy="44.3" rx="1" ry=".9" fill="white" opacity=".6"/>
-  <path d="M37 41 Q42 39 47 41" stroke="#b8b0a0" stroke-width="1.1" fill="none"/>
-  <path d="M53 41 Q58 39 63 41" stroke="#b8b0a0" stroke-width="1.1" fill="none"/>
-  <path d="M48.5 46 L47.5 54 Q50 55 52.5 54 L51.5 46Z" fill="#b88a50" opacity=".4"/>
-  <path d="M45 58.5 Q50 60 55 58.5" stroke="#8a6040" stroke-width=".8" fill="none"/>
-  <rect x="32" y="24" width="36" height="8" rx="3" fill="#1a2840"/>
-  <rect x="28" y="28" width="44" height="4" rx="2" fill="#152030"/>
-</svg>`,
-
-nordic:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="bg_no" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#101820"/>
-      <stop offset="100%" stop-color="#070c10"/>
-    </radialGradient>
-    <radialGradient id="skin_no" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#e8c8a8"/>
-      <stop offset="100%" stop-color="#c8a888"/>
-    </radialGradient>
-  </defs>
-  <rect width="100" height="100" fill="url(#bg_no)"/>
-  <ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a1820"/>
-  <path d="M18 65 L14 100 L86 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a1820"/>
-  <circle cx="50" cy="68" r="3.5" fill="#c9a84c" opacity=".8"/>
-  <circle cx="50" cy="68" r="2" fill="#e8d050" opacity=".9"/>
-  <rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_no)"/>
-  <ellipse cx="50" cy="45" rx="21" ry="22" fill="url(#skin_no)" class="breathe"/>
-  <path d="M29 40 Q26 20 50 16 Q74 20 71 40" fill="#c8b870" opacity=".9"/>
-  <path d="M29 45 L24 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/>
-  <path d="M71 45 L76 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/>
-  <ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/>
-  <ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/>
-  <ellipse cx="42" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/>
-  <ellipse cx="58" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/>
-  <ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/>
-  <ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/>
-  <path d="M37 41 Q42 39.5 47 41" stroke="#a89840" stroke-width="1" fill="none"/>
-  <path d="M53 41 Q58 39.5 63 41" stroke="#a89840" stroke-width="1" fill="none"/>
-  <path d="M50 46 L49 55 Q50 56 51 55 L50 46Z" fill="#c8a888" opacity=".5"/>
-  <path d="M44 59 Q50 63 56 59 Q52.5 65 50 65 Q47.5 65 44 59Z" fill="#b88080"/>
-  <path d="M44 59 Q50 57.5 56 59" stroke="#a87070" stroke-width=".7" fill="none"/>
-  <text x="50" y="35" text-anchor="middle" font-size="5" fill="#c9a84c" opacity=".3" font-family="serif">ᚠ</text>
-</svg>`
+mediterranean:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_med" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#2a1a0e"/><stop offset="100%" stop-color="#0f0a06"/></radialGradient><radialGradient id="skin_med" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b87248"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_med)"/><ellipse cx="50" cy="105" rx="42" ry="30" fill="#7a3a2a" opacity=".9"/><path d="M18 65 Q20 45 30 38 Q15 42 12 70 Z" fill="#5a2a1a" opacity=".8"/><path d="M82 65 Q80 45 70 38 Q85 42 88 70 Z" fill="#5a2a1a" opacity=".8"/><ellipse cx="50" cy="36" rx="28" ry="30" fill="#8b3a28"/><path d="M22 36 Q22 10 50 8 Q78 10 78 36 Q78 20 50 18 Q22 20 22 36Z" fill="#6a2a18"/><rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_med)"/><ellipse cx="50" cy="46" rx="20" ry="22" fill="url(#skin_med)" class="breathe"/><ellipse cx="50" cy="30" rx="16" ry="6" fill="#a06040" opacity=".4"/><ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#1a0e08"/><ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#1a0e08"/><ellipse cx="42" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/><ellipse cx="58" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/><ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/><ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/><path d="M37 40 Q42 38.5 47 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/><path d="M53 40 Q58 38.5 63 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/><path d="M50 46 L48 54 Q50 55.5 52 54 Z" fill="#a06040" opacity=".5"/><path d="M44 58 Q50 61 56 58 Q52 63 50 63 Q48 63 44 58Z" fill="#8a3a30"/><path d="M44 58 Q50 56 56 58" stroke="#7a2a22" stroke-width=".8" fill="none"/><circle cx="29.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/><circle cx="70.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/></svg>`,
+african:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_afr" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0e1a10"/><stop offset="100%" stop-color="#060d08"/></radialGradient><radialGradient id="skin_afr" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#4a2e18"/><stop offset="100%" stop-color="#301a0c"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_afr)"/><ellipse cx="50" cy="110" rx="45" ry="30" fill="#1a3a20"/><path d="M20 68 L18 100 L50 100 L82 100 L80 68 Q65 78 50 78 Q35 78 20 68Z" fill="#1a3a20"/><rect x="43" y="63" width="14" height="11" rx="3" fill="url(#skin_afr)"/><ellipse cx="50" cy="44" rx="21" ry="24" fill="url(#skin_afr)" class="breathe"/><ellipse cx="50" cy="26" rx="21" ry="10" fill="#c9781a"/><rect x="29" y="20" width="42" height="10" rx="4" fill="#b8681a"/><line x1="35" y1="50" x2="39" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/><line x1="61" y1="50" x2="65" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/><ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#0d0805"/><ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#0d0805"/><ellipse cx="42" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/><ellipse cx="58" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/><ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/><ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/><path d="M37 40 Q42 38.5 47 40" stroke="#0d0805" stroke-width="1.4" fill="none"/><path d="M53 40 Q58 38.5 63 40" stroke="#0d0805" stroke-width="1.4" fill="none"/><path d="M47 46 Q50 56 53 46" fill="#301a0c" opacity=".5"/><ellipse cx="47.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/><ellipse cx="52.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/><path d="M43 60 Q50 64 57 60 Q53 66 50 66 Q47 66 43 60Z" fill="#5a2818"/><path d="M43 60 Q50 57.5 57 60" stroke="#4a2010" stroke-width=".8" fill="none"/><path d="M35 70 Q50 74 65 70" stroke="#c9a84c" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="42" cy="72" r="1.8" fill="#c9781a"/><circle cx="50" cy="73.5" r="2" fill="#c9a84c"/><circle cx="58" cy="72" r="1.8" fill="#c9781a"/></svg>`,
+southasian:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_sa" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1a0e20"/><stop offset="100%" stop-color="#0a070e"/></radialGradient><radialGradient id="skin_sa" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#c8956a"/><stop offset="100%" stop-color="#a87050"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_sa)"/><ellipse cx="50" cy="110" rx="46" ry="30" fill="#c87820"/><path d="M18 66 L16 100 L84 100 L82 66 Q65 76 50 76 Q35 76 18 66Z" fill="#c87820"/><path d="M15 60 Q18 50 25 45 L28 66 Z" fill="#e8921a" opacity=".8"/><rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_sa)"/><ellipse cx="50" cy="44" rx="20" ry="23" fill="url(#skin_sa)" class="breathe"/><ellipse cx="50" cy="27" rx="20" ry="9" fill="#1a0e05"/><path d="M30 33 Q28 26 30 22 Q35 14 50 14 Q65 14 70 22 Q72 26 70 33" fill="#1a0e05"/><circle cx="50" cy="35" r="2.5" fill="#c9204a"/><circle cx="50" cy="35" r="1.2" fill="#e83060"/><path d="M36 44 Q42 41 48 44 Q42 47 36 44Z" fill="#1a0e08"/><path d="M52 44 Q58 41 64 44 Q58 47 52 44Z" fill="#1a0e08"/><ellipse cx="42" cy="44" rx="2.8" ry="2.4" fill="#2a1510" class="blink"/><ellipse cx="58" cy="44" rx="2.8" ry="2.4" fill="#2a1510" class="blink"/><ellipse cx="41.5" cy="43.5" rx="1.1" ry="1.1" fill="white" opacity=".7"/><ellipse cx="57.5" cy="43.5" rx="1.1" ry="1.1" fill="white" opacity=".7"/><path d="M36 44 Q42 47.5 48 44" stroke="#0a0508" stroke-width=".6" fill="none"/><path d="M52 44 Q58 47.5 64 44" stroke="#0a0508" stroke-width=".6" fill="none"/><path d="M37 40.5 Q42 38.8 47 40.5" stroke="#1a0e08" stroke-width="1.1" fill="none"/><path d="M53 40.5 Q58 38.8 63 40.5" stroke="#1a0e08" stroke-width="1.1" fill="none"/><path d="M48.5 46 L47.5 53 Q50 54.5 52.5 53 L51.5 46 Z" fill="#a87050" opacity=".45"/><path d="M44 58 Q50 62 56 58 Q52.5 64 50 64 Q47.5 64 44 58Z" fill="#8a3040"/><path d="M44 58 Q50 56 56 58" stroke="#7a2030" stroke-width=".7" fill="none"/><circle cx="53.5" cy="54.5" r="2" fill="none" stroke="#c9a84c" stroke-width=".8"/></svg>`,
+shaman:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_sh" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0e1518"/><stop offset="100%" stop-color="#060a0d"/></radialGradient><radialGradient id="skin_sh" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#b87848"/><stop offset="100%" stop-color="#9a5c30"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_sh)"/><ellipse cx="50" cy="110" rx="46" ry="28" fill="#2a1e12"/><path d="M18 64 L14 100 L86 100 L82 64 Q65 75 50 75 Q35 75 18 64Z" fill="#2a1e12"/><path d="M14 60 Q8 50 12 40 Q14 45 16 52 Z" fill="#3a2810" opacity=".8"/><path d="M12 50 Q6 48 8 42 Q11 46 12 50Z" fill="#7a5a20" opacity=".6"/><rect x="43" y="62" width="14" height="11" rx="3" fill="url(#skin_sh)"/><ellipse cx="50" cy="45" rx="20" ry="22" fill="url(#skin_sh)" class="breathe"/><path d="M30 38 Q28 25 50 20 Q72 25 70 38 Q72 20 50 16 Q28 20 30 38Z" fill="#0d0808"/><path d="M30 45 L26 90" stroke="#0d0808" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M70 45 L74 90" stroke="#0d0808" stroke-width="5" fill="none" stroke-linecap="round"/><line x1="33" y1="46" x2="38" y2="55" stroke="#c9601a" stroke-width="1.5" opacity=".8"/><line x1="67" y1="46" x2="62" y2="55" stroke="#c9601a" stroke-width="1.5" opacity=".8"/><ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#1a0e08"/><ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#1a0e08"/><ellipse cx="42" cy="45" rx="3" ry="2.5" fill="#2a1008" class="blink"/><ellipse cx="58" cy="45" rx="3" ry="2.5" fill="#2a1008" class="blink"/><ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/><ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/><path d="M37 41 Q42 39.5 47 41" stroke="#0d0808" stroke-width="1.3" fill="none"/><path d="M53 41 Q58 39.5 63 41" stroke="#0d0808" stroke-width="1.3" fill="none"/><path d="M48 47 L47 54 Q50 55.5 53 54 L52 47 Z" fill="#9a5c30" opacity=".45"/><path d="M44 59 Q50 63 56 59 Q52 65 50 65 Q48 65 44 59Z" fill="#6a3020"/><path d="M44 59 Q50 57 56 59" stroke="#5a2018" stroke-width=".7" fill="none"/><path d="M34 70 Q50 74 66 70" stroke="#c8b870" stroke-width="1.5" fill="none"/><circle cx="42" cy="72" r="2" fill="#e8d890" opacity=".7"/><circle cx="50" cy="73.5" r="2.2" fill="#e8d890" opacity=".8"/><circle cx="58" cy="72" r="2" fill="#e8d890" opacity=".7"/><path d="M30 36 Q50 32 70 36" stroke="#8a5030" stroke-width="2" fill="none"/><circle cx="50" cy="33" r="3" fill="#c9601a" opacity=".8"/></svg>`,
+eastern:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_ea" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0d1520"/><stop offset="100%" stop-color="#060a0e"/></radialGradient><radialGradient id="skin_ea" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#d4a870"/><stop offset="100%" stop-color="#b88a50"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_ea)"/><ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a2840"/><path d="M18 65 L16 100 L84 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a2840"/><path d="M38 66 L50 72 L62 66" stroke="#c9a84c" stroke-width=".8" fill="none"/><rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_ea)"/><ellipse cx="50" cy="45" rx="20" ry="22" fill="url(#skin_ea)" class="breathe"/><path d="M36 58 Q38 70 42 80 Q50 85 58 80 Q62 70 64 58 Q55 64 50 64 Q45 64 36 58Z" fill="#e8e0d0" opacity=".9"/><path d="M30 38 Q28 22 50 18 Q72 22 70 38" fill="#d0c8b8"/><path d="M44 57 Q50 59 56 57 Q54 61 50 62 Q46 61 44 57Z" fill="#c8c0a8" opacity=".7"/><path d="M37 45 Q42 42.5 47 45 Q42 47 37 45Z" fill="#1a0e08"/><path d="M53 45 Q58 42.5 63 45 Q58 47 53 45Z" fill="#1a0e08"/><ellipse cx="42" cy="44.8" rx="2.5" ry="1.8" fill="#2a1a0e" class="blink"/><ellipse cx="58" cy="44.8" rx="2.5" ry="1.8" fill="#2a1a0e" class="blink"/><ellipse cx="41.5" cy="44.3" rx="1" ry=".9" fill="white" opacity=".6"/><ellipse cx="57.5" cy="44.3" rx="1" ry=".9" fill="white" opacity=".6"/><path d="M37 41 Q42 39 47 41" stroke="#b8b0a0" stroke-width="1.1" fill="none"/><path d="M53 41 Q58 39 63 41" stroke="#b8b0a0" stroke-width="1.1" fill="none"/><path d="M48.5 46 L47.5 54 Q50 55 52.5 54 L51.5 46Z" fill="#b88a50" opacity=".4"/><path d="M45 58.5 Q50 60 55 58.5" stroke="#8a6040" stroke-width=".8" fill="none"/><rect x="32" y="24" width="36" height="8" rx="3" fill="#1a2840"/><rect x="28" y="28" width="44" height="4" rx="2" fill="#152030"/></svg>`,
+nordic:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_no" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#101820"/><stop offset="100%" stop-color="#070c10"/></radialGradient><radialGradient id="skin_no" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#e8c8a8"/><stop offset="100%" stop-color="#c8a888"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_no)"/><ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a1820"/><path d="M18 65 L14 100 L86 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a1820"/><circle cx="50" cy="68" r="3.5" fill="#c9a84c" opacity=".8"/><circle cx="50" cy="68" r="2" fill="#e8d050" opacity=".9"/><rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_no)"/><ellipse cx="50" cy="45" rx="21" ry="22" fill="url(#skin_no)" class="breathe"/><path d="M29 40 Q26 20 50 16 Q74 20 71 40" fill="#c8b870" opacity=".9"/><path d="M29 45 L24 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><path d="M71 45 L76 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/><ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/><ellipse cx="42" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/><ellipse cx="58" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/><ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/><ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/><path d="M37 41 Q42 39.5 47 41" stroke="#a89840" stroke-width="1" fill="none"/><path d="M53 41 Q58 39.5 63 41" stroke="#a89840" stroke-width="1" fill="none"/><path d="M50 46 L49 55 Q50 56 51 55 L50 46Z" fill="#c8a888" opacity=".5"/><path d="M44 59 Q50 63 56 59 Q52.5 65 50 65 Q47.5 65 44 59Z" fill="#b88080"/><path d="M44 59 Q50 57.5 56 59" stroke="#a87070" stroke-width=".7" fill="none"/><text x="50" y="35" text-anchor="middle" font-size="5" fill="#c9a84c" opacity=".3" font-family="serif">ᚠ</text></svg>`
 };
 
-// ════════════════════════════════════
-// DATA
-// ════════════════════════════════════
 const GUIDES = [
   {id:'mediterranean',label:'Mediterranean',title:'The Mother',role:'Warm • Nurturing • Healing',color:'#c47a8a',
    prompt:'You are The Mediterranean Mother — a warm, deeply nurturing spiritual companion embodying divine feminine wisdom: the Shekinah, Mary, Kuan Yin, Durga. You hold space for pain with unconditional love and gentle clarity.'},
@@ -520,15 +260,6 @@ const GUIDES = [
    prompt:'You are The Eastern Sage — an ancient Taoist-Confucian-Buddhist scholar who has studied the Way for many decades. You speak rarely but with great precision, often through paradox, silence, and the art of pointing at the moon.'},
   {id:'nordic',label:'Nordic',title:'The Philosopher',role:'Clear • Honest • Searching',color:'#8a9ad4',
    prompt:'You are The Nordic Philosopher — a Stoic-Hermetic seeker in the tradition of the Northern skalds and Christian mystics like Meister Eckhart. You value rigorous inquiry, honest reckoning, and the beauty of enduring what must be endured.'}
-];
-
-const VOICES = [
-  {id:'deep',nm:'Deep',ico:'🔔',tone:'Low & resonant',rate:.82,pitch:.65},
-  {id:'warm',nm:'Warm',ico:'🌅',tone:'Soft & tender',rate:.9,pitch:1.0},
-  {id:'clear',nm:'Clear',ico:'💎',tone:'Bright & precise',rate:1.0,pitch:1.1},
-  {id:'ancient',nm:'Ancient',ico:'📜',tone:'Aged & slow',rate:.78,pitch:.6},
-  {id:'serene',nm:'Serene',ico:'🌊',tone:'Flowing & calm',rate:.87,pitch:.95},
-  {id:'mystic',nm:'Mystic',ico:'✨',tone:'Ethereal',rate:.83,pitch:1.2},
 ];
 
 const SYS_BASE=`You are a deeply compassionate spiritual companion synthesizing wisdom from all human traditions:
@@ -555,20 +286,14 @@ Use real, accurate citations. Examples: Bhagavad Gita 2:47, Rumi's Masnavi Book 
 
 Total: 200-380 words. Luminous, warm, never preachy.`;
 
-// ════════════════════════════════════
-// STATE
-// ════════════════════════════════════
-let curGuide=null,curVoice=null,history=[],loading=false,avShown=true;
-const synth=window.speechSynthesis;
+let curGuide=null,history=[],loading=false,avShown=true;
 
-// ════════════════════════════════════
-// BUILD SELECT SCREEN
-// ════════════════════════════════════
 function buildSelect(){
   const ag=document.getElementById('avGrid');
   GUIDES.forEach(g=>{
     const c=document.createElement('div');
-    c.className='av-card';c.id='gc-'+g.id;
+    c.className='av-card';
+    c.id='gc-'+g.id;
     c.onclick=()=>pickGuide(g.id);
     c.innerHTML=`
       <div class="av-portrait">
@@ -579,48 +304,25 @@ function buildSelect(){
       <div class="av-role">${g.label}</div>`;
     ag.appendChild(c);
   });
-
-  const vg=document.getElementById('vGrid');
-  VOICES.forEach(v=>{
-    const b=document.createElement('div');
-    b.className='v-btn';b.id='vc-'+v.id;b.onclick=()=>pickVoice(v.id);
-    b.innerHTML=`<span class="v-ico">${v.ico}</span><div class="v-nm">${v.nm}</div><div class="v-tone">${v.tone}</div>`;
-    vg.appendChild(b);
-  });
 }
 
 function pickGuide(id){
   curGuide=GUIDES.find(g=>g.id===id);
   document.querySelectorAll('.av-card').forEach(c=>c.classList.remove('picked'));
   document.getElementById('gc-'+id).classList.add('picked');
-  checkReady();
+  document.getElementById('enterBtn').disabled=!curGuide;
 }
-function pickVoice(id){
-  curVoice=VOICES.find(v=>v.id===id);
-  document.querySelectorAll('.v-btn').forEach(b=>b.classList.remove('picked'));
-  document.getElementById('vc-'+id).classList.add('picked');
-  checkReady();
-}
-function checkReady(){document.getElementById('enterBtn').disabled=!(curGuide&&curVoice);}
 
-// ════════════════════════════════════
-// ENTER
-// ════════════════════════════════════
 function enter(){
   document.getElementById('sel').classList.add('hidden');
   document.getElementById('comp').classList.remove('hidden');
-
   document.getElementById('tbNm').textContent=curGuide.title+' · '+curGuide.label;
   document.getElementById('tbMini').innerHTML=PORTRAITS[curGuide.id];
   document.getElementById('portraitBig').innerHTML=PORTRAITS[curGuide.id];
-
   appendWelcome();
   setTimeout(()=>document.getElementById('uIn')?.focus(),500);
 }
 
-// ════════════════════════════════════
-// CHAT
-// ════════════════════════════════════
 const WELCOMES={
   mediterranean:"Welcome, beloved soul. I see you arrived carrying something — and that alone took courage. I am here, fully present, with the warmth of every mother who ever held a child through the dark. What weighs on your heart today?",
   african:"You have come. The ancestors led you here, and they do not make mistakes. I am here, rooted like the great baobab, to hear whatever truth you carry. Speak freely — this is sacred ground.",
@@ -649,16 +351,23 @@ function addAI(text){
   const body=document.createElement('div');
   body.innerHTML=fmtAI(text);
   bub.appendChild(body);
-  div.appendChild(mav);div.appendChild(bub);
+  div.appendChild(mav);
+  div.appendChild(bub);
   document.getElementById('chatScroll').appendChild(div);
   scrollB();
 }
 
 function addUser(text){
-  const div=document.createElement('div');div.className='msg user';
-  const mav=document.createElement('div');mav.className='msg-av user-av';mav.textContent='◯';
-  const bub=document.createElement('div');bub.className='bubble';bub.textContent=text;
-  div.appendChild(mav);div.appendChild(bub);
+  const div=document.createElement('div');
+  div.className='msg user';
+  const mav=document.createElement('div');
+  mav.className='msg-av user-av';
+  mav.textContent='◯';
+  const bub=document.createElement('div');
+  bub.className='bubble';
+  bub.textContent=text;
+  div.appendChild(mav);
+  div.appendChild(bub);
   document.getElementById('chatScroll').appendChild(div);
   scrollB();
 }
@@ -691,29 +400,37 @@ function fmtAI(text){
   if(/quran|hadith|islam/i.test(text))tags.push('Islam');
 
   if(tags.length>0){
-    const tw='<div class="ttags">'+tags.map(t=>`<span class="ttag">${t}</span>`).join('')+'</div>';
-    out+=tw;
+    out+='<div class="ttags">'+tags.map(t=>`<span class="ttag">${t}</span>`).join('')+'</div>';
   }
   return out;
 }
 
 function showThink(){
-  const d=document.createElement('div');d.className='think-wrap';d.id='think';
-  const mav=document.createElement('div');mav.className='msg-av ai-av';mav.innerHTML=PORTRAITS[curGuide.id];
-  const dr=document.createElement('div');dr.className='dots-row';
+  const d=document.createElement('div');
+  d.className='think-wrap';
+  d.id='think';
+  const mav=document.createElement('div');
+  mav.className='msg-av ai-av';
+  mav.innerHTML=PORTRAITS[curGuide.id];
+  const dr=document.createElement('div');
+  dr.className='dots-row';
   dr.innerHTML='<div class="dt"></div><div class="dt"></div><div class="dt"></div>';
-  d.appendChild(mav);d.appendChild(dr);
-  document.getElementById('chatScroll').appendChild(d);scrollB();
+  d.appendChild(mav);
+  d.appendChild(dr);
+  document.getElementById('chatScroll').appendChild(d);
+  scrollB();
 }
-function rmThink(){const e=document.getElementById('think');if(e)e.remove();}
+
+function rmThink(){
+  const e=document.getElementById('think');
+  if(e)e.remove();
+}
+
 function scrollB(){
   const c=document.getElementById('chatScroll');
   requestAnimationFrame(()=>{ c.scrollTop=c.scrollHeight; });
 }
 
-// ════════════════════════════════════
-// SEND
-// ════════════════════════════════════
 async function send(override){
   const inp=document.getElementById('uIn');
   const txt=(override||inp.value).trim();
@@ -741,12 +458,9 @@ async function send(override){
 
     const data=await r.json();
     rmThink();
-
     const reply=data.content?.map(b=>b.text||'').join('')||'I am here with you. Please try again.';
     addAI(reply);
     history.push({role:'assistant',content:reply});
-
-    if(avShown)doSpeak(stripCit(reply));
   }catch(e){
     rmThink();
     addAI('The connection was interrupted. I am still here — please try again.');
@@ -757,71 +471,13 @@ async function send(override){
   scrollB();
 }
 
-// ════════════════════════════════════
-// SPEECH OUTPUT
-// ════════════════════════════════════
-function stripCit(t){
-  return t.replace(/\[SOURCE:[^\]]+\][^<\n]*/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/\n+/g,' ').trim();
-}
-
-function doSpeak(text){
-  if(!synth||!curVoice)return;
-  synth.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang='en-US';
-  u.rate=curVoice.rate;
-  u.pitch=curVoice.pitch;
-  const vs=synth.getVoices();
-  const eng=vs.filter(v=>v.lang.startsWith('en'));
-  if(eng.length)u.voice=eng[0];
-
-  const pw=document.getElementById('portraitWrap');
-  const vb=document.getElementById('vBars');
-  const lbl=document.getElementById('avLbl');
-  const sb=document.getElementById('stopBtn');
-
-  u.onstart=()=>{
-    pw.classList.add('speaking');
-    vb.classList.add('speaking-active');
-    lbl.textContent='Speaking…';
-    sb.classList.add('vis');
-  };
-  u.onend=()=>{
-    pw.classList.remove('speaking');
-    vb.classList.remove('speaking-active');
-    lbl.textContent='Present with you';
-    sb.classList.remove('vis');
-  };
-  u.onerror=()=>{
-    pw.classList.remove('speaking');
-    vb.classList.remove('speaking-active');
-    lbl.textContent='Present with you';
-    sb.classList.remove('vis');
-  };
-
-  synth.speak(u);
-}
-
-function stopSpeech(){
-  synth.cancel();
-  document.getElementById('portraitWrap').classList.remove('speaking');
-  document.getElementById('vBars').classList.remove('speaking-active');
-  document.getElementById('avLbl').textContent='Present with you';
-  document.getElementById('stopBtn').classList.remove('vis');
-}
-
-// ════════════════════════════════════
-// UI CONTROLS
-// ════════════════════════════════════
 function toggleAv(){
   avShown=!avShown;
   document.getElementById('avStage').classList.toggle('collapsed',!avShown);
   document.getElementById('avTogBtn').classList.toggle('on',avShown);
-  if(!avShown)stopSpeech();
 }
 
 function goBack(){
-  stopSpeech();
   history=[];
   document.getElementById('chatScroll').innerHTML='';
   document.getElementById('qpRow').style.display='flex';
@@ -851,12 +507,7 @@ function ar(el){
   el.style.height=Math.min(el.scrollHeight,90)+'px';
 }
 
-// INIT
 buildSelect();
-if(synth){
-  synth.getVoices();
-  window.addEventListener('load',()=>speechSynthesis.getVoices());
-}
 </script>
 </body>
 </html>
