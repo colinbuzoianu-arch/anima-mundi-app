@@ -11,72 +11,178 @@
   gtag('js', new Date());
   gtag('config', 'G-5M8CP9SJHT');
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cinzel:wght@400;500;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Cinzel:wght@400;500;600;700&family=Lato:wght@300;400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --gold:#c9a84c;--gold-l:#e8d488;--gold-d:#6a5020;--gold-faint:rgba(201,168,76,0.07);
-  --deep:#07060d;--surf:#0f0d18;--surf2:#171422;--surf3:#201c2e;
-  --text:#ede5d5;--muted:#7a7060;--muted2:#3a3530;
-  --r:14px;
+  --gold-mid:rgba(201,168,76,0.18);
+  --deep:#05040c;--surf:#0e0c1a;--surf2:#161324;--surf3:#1e1a2e;--surf4:#252038;
+  --text:#ede5d5;--muted:#7a7060;--muted2:#3a3530;--muted3:#524d45;
+  --r:16px;
+  --char-color:#c9a84c;
 }
 html,body{height:100%;background:var(--deep);color:var(--text);font-family:'Lato',sans-serif;font-weight:300;overflow:hidden;-webkit-tap-highlight-color:transparent}
 
-/* NOISE */
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.35;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")}
+/* ── AMBIENT CANVAS ── */
+#ambientCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6}
 
-/* SCREENS */
-.screen{position:fixed;inset:0;transition:opacity .55s ease,transform .55s ease;display:flex;flex-direction:column;align-items:center}
-.screen.hidden{opacity:0;pointer-events:none;transform:scale(.96)}
+/* ── GRAIN OVERLAY ── */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.22;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
 
-/* ══════════ SELECT SCREEN ══════════ */
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1);z-index:10}
+.screen.hidden{opacity:0;pointer-events:none;transform:scale(.97) translateY(8px)}
+
+/* ══════════════════════════════
+   SELECT SCREEN
+══════════════════════════════ */
 #sel{
-  background:radial-gradient(ellipse 120% 70% at 50% -5%,#1c1530 0%,var(--deep) 65%);
-  overflow-y:auto;padding:36px 18px 50px;gap:0
+  background:radial-gradient(ellipse 140% 80% at 50% -10%,#1a1035 0%,var(--deep) 60%);
+  overflow-y:auto;padding:28px 16px 60px;gap:0;align-items:center;
 }
-.logo{text-align:center;margin-bottom:30px}
-.logo-sym{font-size:1.9rem;color:var(--gold);display:block;animation:spin 80s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.logo-t{font-family:'Cinzel',serif;font-size:1.45rem;letter-spacing:.22em;color:var(--gold-l);text-transform:uppercase;margin-top:6px}
-.logo-s{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted);font-size:.9rem;margin-top:3px}
 
-.sec-label{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;text-align:center}
+/* LOGO */
+.logo{text-align:center;margin-bottom:32px;position:relative}
+.logo-mandala{width:64px;height:64px;margin:0 auto 12px;position:relative}
+.logo-mandala svg{width:100%;height:100%;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.logo-t{font-family:'Cinzel',serif;font-size:1.6rem;letter-spacing:.28em;color:var(--gold-l);text-transform:uppercase;font-weight:500}
+.logo-s{font-family:'IM Fell English',serif;font-style:italic;color:var(--muted);font-size:.92rem;margin-top:5px;letter-spacing:.04em}
+.logo-line{width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);margin:14px auto 0}
+
+/* SECTION LABEL */
+.sec-label{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;text-align:center;position:relative}
+.sec-label::before,.sec-label::after{content:'✦';margin:0 10px;font-size:.5rem;opacity:.5}
 
 /* AVATAR GRID */
-.avatar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:540px}
+.avatar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:560px;margin:0 auto}
+
 .av-card{
-  background:var(--surf);border:1px solid rgba(201,168,76,.12);border-radius:var(--r);
-  padding:14px 10px 12px;cursor:pointer;text-align:center;
-  transition:transform .22s,border-color .22s,box-shadow .22s;position:relative;overflow:hidden
+  background:linear-gradient(145deg,var(--surf),var(--surf2));
+  border:1px solid rgba(201,168,76,.1);border-radius:20px;
+  padding:0;cursor:pointer;text-align:center;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
 }
-.av-card:hover{transform:translateY(-3px);border-color:rgba(201,168,76,.35);box-shadow:0 10px 30px rgba(0,0,0,.5)}
-.av-card.picked{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 6px 28px rgba(201,168,76,.2)}
-.av-portrait{width:72px;height:72px;margin:0 auto 10px;border-radius:50%;overflow:hidden;position:relative}
+.av-card::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,var(--char-glow,rgba(201,168,76,.08)),transparent 70%);
+  opacity:0;transition:opacity .35s;pointer-events:none;
+}
+.av-card:hover::before,.av-card.picked::before{opacity:1}
+.av-card:hover{transform:translateY(-5px) scale(1.02);border-color:rgba(201,168,76,.3);box-shadow:0 16px 40px rgba(0,0,0,.6),0 0 0 1px rgba(201,168,76,.1)}
+.av-card.picked{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 12px 40px rgba(201,168,76,.25);transform:translateY(-3px)}
+
+.av-card-inner{padding:16px 10px 14px}
+.av-portrait{width:76px;height:76px;margin:0 auto 12px;border-radius:50%;overflow:hidden;position:relative;flex-shrink:0}
 .av-portrait svg{width:100%;height:100%}
-.av-ring{position:absolute;inset:-4px;border-radius:50%;border:1px solid currentColor;opacity:.25;animation:pr 3.5s ease-in-out infinite;pointer-events:none}
-@keyframes pr{0%,100%{transform:scale(1);opacity:.25}50%{transform:scale(1.08);opacity:.08}}
-.av-nm{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
-.av-role{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;color:var(--muted);line-height:1.3}
+.av-ring{position:absolute;inset:-5px;border-radius:50%;border:1px solid currentColor;opacity:.2;animation:pulse-ring 4s ease-in-out infinite;pointer-events:none}
+.av-ring2{position:absolute;inset:-12px;border-radius:50%;border:1px solid currentColor;opacity:.08;animation:pulse-ring 4s ease-in-out infinite .8s;pointer-events:none}
+@keyframes pulse-ring{0%,100%{transform:scale(1);opacity:.2}50%{transform:scale(1.07);opacity:.06}}
 
-.enter-btn{
-  margin-top:30px;padding:13px 44px;
-  background:linear-gradient(135deg,var(--gold-d),var(--gold));
-  border:none;border-radius:40px;cursor:pointer;
-  font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--deep);font-weight:600;transition:all .25s;box-shadow:0 4px 20px rgba(201,168,76,.28)
+.av-nm{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px;font-weight:500}
+.av-role{font-family:'IM Fell English',serif;font-style:italic;font-size:.76rem;color:var(--muted);line-height:1.35}
+.av-tradition{font-family:'Lato',sans-serif;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);opacity:.6;margin-top:4px}
+
+/* LORE PEEK — appears on hover */
+.av-lore-peek{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:10px 10px 12px;
+  background:linear-gradient(to top,rgba(5,4,12,.97) 0%,rgba(5,4,12,.8) 70%,transparent 100%);
+  font-family:'IM Fell English',serif;font-style:italic;font-size:.72rem;color:var(--gold-l);
+  line-height:1.45;opacity:0;transform:translateY(6px);
+  transition:opacity .3s,transform .3s;pointer-events:none;text-align:center;
+  border-radius:0 0 20px 20px;
 }
-.enter-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.38)}
-.enter-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.av-card:hover .av-lore-peek{opacity:1;transform:translateY(0)}
 
-/* ══════════ COMPANION SCREEN ══════════ */
+/* ENTER BUTTON */
+.enter-btn{
+  margin-top:28px;padding:15px 52px;
+  background:linear-gradient(135deg,var(--gold-d) 0%,var(--gold) 50%,var(--gold-l) 100%);
+  border:none;border-radius:50px;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--deep);font-weight:600;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 4px 24px rgba(201,168,76,.3),0 0 0 1px rgba(201,168,76,.2);
+  position:relative;overflow:hidden;
+}
+.enter-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.2) 60%,transparent 70%);transform:translateX(-100%);transition:transform .5s}
+.enter-btn:hover::after{transform:translateX(100%)}
+.enter-btn:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(201,168,76,.45)}
+.enter-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ══════════════════════════════
+   LORE PANEL (full-screen overlay)
+══════════════════════════════ */
+#lorePanel{
+  position:fixed;inset:0;z-index:50;
+  background:rgba(5,4,12,.92);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:0;overflow-y:auto;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s;
+}
+#lorePanel.open{opacity:1;pointer-events:all}
+
+.lore-inner{
+  max-width:500px;width:100%;padding:32px 24px 60px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.lore-close{
+  align-self:flex-end;width:36px;height:36px;border-radius:50%;
+  background:var(--surf3);border:1px solid rgba(255,255,255,.08);
+  color:var(--muted);cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;margin-bottom:20px;
+}
+.lore-close:hover{border-color:var(--gold);color:var(--gold)}
+
+.lore-portrait{width:120px;height:120px;border-radius:50%;overflow:hidden;margin:0 auto 18px;
+  border:2px solid var(--gold);box-shadow:0 0 40px rgba(201,168,76,.2),0 0 0 8px rgba(201,168,76,.05)}
+.lore-portrait svg{width:100%;height:100%}
+.lore-title{font-family:'Cinzel',serif;font-size:1.3rem;letter-spacing:.18em;color:var(--gold-l);text-align:center;margin-bottom:4px}
+.lore-subtitle{font-family:'IM Fell English',serif;font-style:italic;color:var(--muted);font-size:.9rem;text-align:center;margin-bottom:6px}
+.lore-tradition-badge{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  border:1px solid rgba(201,168,76,.25);background:var(--gold-faint);
+  font-family:'Lato',sans-serif;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-d);margin-bottom:22px;
+}
+.lore-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);margin:0 auto 20px}
+
+.lore-origin{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;text-align:center}
+.lore-story{font-family:'IM Fell English',serif;font-size:.95rem;line-height:1.85;color:var(--text);text-align:center;margin-bottom:20px}
+.lore-story em{font-style:italic;color:var(--gold-l)}
+
+.lore-teachings{margin-bottom:24px;width:100%}
+.lore-teachings-title{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-d);text-align:center;margin-bottom:12px}
+.lore-teaching{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;background:var(--surf);border-radius:10px;
+  border-left:2px solid var(--gold-d);margin-bottom:8px;
+  font-family:'IM Fell English',serif;font-style:italic;font-size:.85rem;color:var(--muted);line-height:1.55;
+}
+.lore-teaching::before{content:'✦';color:var(--gold-d);font-style:normal;font-size:.65rem;margin-top:3px;flex-shrink:0}
+
+.lore-enter-btn{
+  width:100%;max-width:280px;padding:14px 0;
+  background:linear-gradient(135deg,var(--gold-d),var(--gold));
+  border:none;border-radius:50px;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--deep);font-weight:600;transition:all .25s;
+  box-shadow:0 4px 24px rgba(201,168,76,.3);margin-top:4px;
+}
+.lore-enter-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.4)}
+
+/* ══════════════════════════════
+   COMPANION SCREEN
+══════════════════════════════ */
 #comp{
   background:var(--deep);
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-  width:100%;
-  min-height:0;
+  display:flex;flex-direction:column;height:100vh;width:100%;min-height:0;
 }
 
 /* TOP BAR */
@@ -84,133 +190,215 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
   display:flex;align-items:center;justify-content:space-between;
   padding:12px 16px 10px;
   border-bottom:1px solid rgba(255,255,255,.04);
-  background:rgba(7,6,13,.85);backdrop-filter:blur(14px);
-  position:sticky;top:0;z-index:20;width:100%;
-  flex-shrink:0;
+  background:rgba(5,4,12,.88);backdrop-filter:blur(20px);
+  position:sticky;top:0;z-index:20;width:100%;flex-shrink:0;
 }
 .tb-l{display:flex;align-items:center;gap:10px}
-.tb-mini-av{width:32px;height:32px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,168,76,.3);flex-shrink:0}
+.tb-mini-av{width:34px;height:34px;border-radius:50%;overflow:hidden;border:1px solid rgba(201,168,76,.35);flex-shrink:0;cursor:pointer;transition:border-color .2s}
+.tb-mini-av:hover{border-color:var(--gold)}
 .tb-mini-av svg{width:100%;height:100%}
-.tb-nm{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-l)}
-.tb-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.72rem;color:var(--muted)}
+.tb-nm{font-family:'Cinzel',serif;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);font-weight:500}
+.tb-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.72rem;color:var(--muted)}
 .tb-r{display:flex;gap:6px}
-.ico-btn{width:32px;height:32px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,.07);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;transition:all .2s;flex-shrink:0}
-.ico-btn:hover,.ico-btn.on{border-color:var(--gold);color:var(--gold)}
+.ico-btn{width:32px;height:32px;border-radius:9px;background:transparent;border:1px solid rgba(255,255,255,.07);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.78rem;transition:all .2s;flex-shrink:0}
+.ico-btn:hover,.ico-btn.on{border-color:rgba(201,168,76,.4);color:var(--gold);background:var(--gold-faint)}
 
 /* AVATAR STAGE */
 .av-stage{
   display:flex;flex-direction:column;align-items:center;
-  padding:18px 16px 12px;
-  background:linear-gradient(to bottom,var(--surf) 0%,transparent 100%);
+  padding:20px 16px 14px;
+  background:linear-gradient(to bottom,var(--surf) 0%,rgba(14,12,26,.5) 80%,transparent 100%);
   border-bottom:1px solid rgba(255,255,255,.04);width:100%;
-  transition:max-height .4s ease,opacity .4s ease,padding .4s ease;
-  max-height:320px;overflow:hidden;
-  flex-shrink:0;
+  transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .45s,padding .45s;
+  max-height:340px;overflow:hidden;flex-shrink:0;position:relative;
 }
 .av-stage.collapsed{max-height:0;opacity:0;padding:0;pointer-events:none}
 
-.portrait-wrap{position:relative;width:130px;height:130px}
+/* Stage ambient glow */
+.av-stage::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:200px;height:120px;border-radius:50%;
+  background:radial-gradient(ellipse,var(--char-color,#c9a84c) 0%,transparent 70%);
+  opacity:.06;pointer-events:none;filter:blur(20px);
+}
+
+.portrait-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
 .portrait-bg{
-  width:130px;height:130px;border-radius:50%;overflow:hidden;
-  border:1px solid rgba(201,168,76,.3);
-  box-shadow:0 0 40px rgba(201,168,76,.1),0 0 80px rgba(201,168,76,.04);
-  position:relative;z-index:1
+  width:140px;height:140px;border-radius:50%;overflow:hidden;
+  border:1px solid rgba(201,168,76,.25);
+  box-shadow:0 0 50px rgba(201,168,76,.12),0 0 100px rgba(201,168,76,.05);
+  position:relative;z-index:1;
 }
 .portrait-bg svg{width:100%;height:100%}
-.p-ring1{position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(201,168,76,.2);animation:pr 4s ease-in-out infinite;top:-6px;left:-6px;width:calc(100% + 12px);height:calc(100% + 12px)}
-.p-ring2{position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(201,168,76,.08);animation:pr 4s ease-in-out infinite .9s;top:-14px;left:-14px;width:calc(100% + 28px);height:calc(100% + 28px)}
+.p-ring1{position:absolute;top:-8px;left:-8px;width:calc(100% + 16px);height:calc(100% + 16px);border-radius:50%;border:1px solid rgba(201,168,76,.18);animation:pulse-ring 4.5s ease-in-out infinite}
+.p-ring2{position:absolute;top:-18px;left:-18px;width:calc(100% + 36px);height:calc(100% + 36px);border-radius:50%;border:1px solid rgba(201,168,76,.07);animation:pulse-ring 4.5s ease-in-out infinite .9s}
+.p-ring3{position:absolute;top:-30px;left:-30px;width:calc(100% + 60px);height:calc(100% + 60px);border-radius:50%;border:1px solid rgba(201,168,76,.03);animation:pulse-ring 4.5s ease-in-out infinite 1.8s}
 
-/* breathing — SVG elements with class .breathe get this */
 .breathe{animation:breathe 5s ease-in-out infinite}
 @keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.015) translateY(-1px)}}
 .blink{animation:blink-anim 6s ease-in-out infinite}
 @keyframes blink-anim{0%,94%,100%{transform:scaleY(1)}96%,98%{transform:scaleY(0.08)}}
-.av-lbl{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--muted);margin-top:6px}
+
+.av-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:.8rem;color:var(--muted);margin-top:10px}
+
+.char-name-stage{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);margin-top:4px;font-weight:500}
+
+/* Lore button in stage */
+.stage-lore-btn{
+  margin-top:10px;padding:5px 16px;
+  border:1px solid rgba(201,168,76,.2);border-radius:20px;background:transparent;
+  font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold-d);cursor:pointer;transition:all .2s;
+}
+.stage-lore-btn:hover{border-color:rgba(201,168,76,.5);color:var(--gold);background:var(--gold-faint)}
 
 /* CHAT */
 .chat-scroll{
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  padding:16px 14px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  scrollbar-width:thin;
-  scrollbar-color:var(--surf3) transparent;
-  width:100%;
+  flex:1;min-height:0;overflow-y:auto;
+  padding:18px 14px;display:flex;flex-direction:column;gap:16px;
+  scrollbar-width:thin;scrollbar-color:var(--surf3) transparent;width:100%;
 }
 .chat-scroll::-webkit-scrollbar{width:3px}
 .chat-scroll::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:3px}
 
-.msg{display:flex;gap:8px;animation:fu .4s ease both}
-@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg{display:flex;gap:9px;animation:rise .45s cubic-bezier(.34,1.3,.64,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{flex-direction:row-reverse}
-.msg-av{width:28px;height:28px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.75rem}
+
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.75rem}
 .msg-av.ai-av{border:1px solid rgba(201,168,76,.3);background:var(--surf2)}
 .msg-av.ai-av svg{width:100%;height:100%}
-.msg-av.user-av{background:var(--surf3);border:1px solid rgba(255,255,255,.08);color:var(--muted)}
+.msg-av.user-av{background:var(--surf3);border:1px solid rgba(255,255,255,.08);color:var(--muted);font-family:'Cinzel',serif;font-size:.65rem}
 
-.bubble{max-width:84%;padding:12px 15px;border-radius:var(--r);line-height:1.75;font-size:.86rem}
-.msg.ai .bubble{background:var(--surf);border:1px solid rgba(201,168,76,.1);border-radius:3px 13px 13px 13px}
-.msg.user .bubble{background:var(--surf2);border:1px solid rgba(92,107,192,.18);border-radius:13px 3px 13px 13px}
+.bubble{max-width:86%;padding:13px 16px;border-radius:var(--r);line-height:1.78;font-size:.87rem}
+.msg.ai .bubble{
+  background:linear-gradient(145deg,var(--surf),var(--surf2));
+  border:1px solid rgba(201,168,76,.1);
+  border-radius:3px 16px 16px 16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+.msg.user .bubble{
+  background:linear-gradient(145deg,var(--surf3),var(--surf2));
+  border:1px solid rgba(100,90,180,.15);
+  border-radius:16px 3px 16px 16px;
+}
 
-.ai-nm{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.14em;color:var(--gold-d);text-transform:uppercase;margin-bottom:6px}
+.ai-nm{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.16em;color:var(--gold-d);text-transform:uppercase;margin-bottom:8px;font-weight:500}
 
 /* citation */
-.cit{margin-top:11px;padding:9px 12px;background:rgba(201,168,76,.05);border-left:2px solid var(--gold-d);border-radius:0 8px 8px 0}
-.cit-src{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-d);margin-bottom:3px}
-.cit-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.83rem;color:var(--muted);line-height:1.5}
+.cit{margin-top:12px;padding:10px 14px;background:rgba(201,168,76,.05);border-left:2px solid var(--gold-d);border-radius:0 10px 10px 0}
+.cit-src{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:4px}
+.cit-txt{font-family:'IM Fell English',serif;font-style:italic;font-size:.85rem;color:var(--muted);line-height:1.55}
 
-.ttags{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}
-.ttag{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);border:1px solid rgba(201,168,76,.18);border-radius:20px;padding:2px 7px;font-family:'Lato',sans-serif}
+/* story reveal */
+.story-reveal{
+  margin-top:12px;padding:12px 14px;
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  border:1px solid rgba(201,168,76,.14);border-radius:10px;
+  font-family:'IM Fell English',serif;font-style:italic;font-size:.83rem;
+  color:var(--gold-l);line-height:1.55;
+}
+.story-reveal-src{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-d);margin-bottom:5px;font-style:normal}
+
+.ttags{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.ttag{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);border:1px solid rgba(201,168,76,.18);border-radius:20px;padding:2px 8px;font-family:'Lato',sans-serif}
 
 /* thinking */
-.think-wrap{display:flex;gap:8px;animation:fu .3s ease both}
-.dots-row{display:flex;align-items:center;gap:4px;padding:12px 14px;background:var(--surf);border:1px solid rgba(201,168,76,.08);border-radius:3px 13px 13px 13px}
-.dt{width:5px;height:5px;border-radius:50%;background:var(--gold-d);animation:bl 1.4s ease-in-out infinite}
-.dt:nth-child(2){animation-delay:.2s}.dt:nth-child(3){animation-delay:.4s}
-@keyframes bl{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.think-wrap{display:flex;gap:9px;animation:rise .3s ease both}
+.dots-row{display:flex;align-items:center;gap:5px;padding:13px 16px;
+  background:linear-gradient(145deg,var(--surf),var(--surf2));
+  border:1px solid rgba(201,168,76,.08);border-radius:3px 16px 16px 16px}
+.dt{width:5px;height:5px;border-radius:50%;background:var(--gold-d);animation:blink-dot 1.4s ease-in-out infinite}
+.dt:nth-child(2){animation-delay:.22s}.dt:nth-child(3){animation-delay:.44s}
+@keyframes blink-dot{0%,80%,100%{opacity:.25;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 
 /* INPUT */
-.input-zone{padding:10px 13px 18px;background:linear-gradient(to top,var(--deep) 65%,transparent);width:100%;flex-shrink:0}
-.txt-row{display:flex;gap:7px;background:var(--surf);border:1px solid rgba(201,168,76,.18);border-radius:11px;padding:3px 3px 3px 13px;transition:border-color .2s}
-.txt-row:focus-within{border-color:rgba(201,168,76,.42);box-shadow:0 0 18px rgba(201,168,76,.05)}
-textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Lato',sans-serif;font-weight:300;font-size:.86rem;line-height:1.5;resize:none;padding:8px 0;min-height:38px;max-height:90px}
+.input-zone{padding:10px 14px 20px;background:linear-gradient(to top,var(--deep) 60%,transparent);width:100%;flex-shrink:0}
+.txt-row{display:flex;gap:8px;background:var(--surf);border:1px solid rgba(201,168,76,.18);border-radius:14px;padding:4px 4px 4px 14px;transition:border-color .25s,box-shadow .25s}
+.txt-row:focus-within{border-color:rgba(201,168,76,.4);box-shadow:0 0 24px rgba(201,168,76,.07)}
+textarea{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'Lato',sans-serif;font-weight:300;font-size:.87rem;line-height:1.5;resize:none;padding:8px 0;min-height:38px;max-height:90px}
 textarea::placeholder{color:var(--muted)}
-.send-btn{width:38px;height:38px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;border-radius:7px;color:var(--deep);cursor:pointer;display:flex;align-items:center;justify-content:center;align-self:flex-end;transition:all .2s;flex-shrink:0}
-.send-btn:hover:not(:disabled){filter:brightness(1.15)}
+.send-btn{width:40px;height:40px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;border-radius:10px;color:var(--deep);cursor:pointer;display:flex;align-items:center;justify-content:center;align-self:flex-end;transition:all .2s;flex-shrink:0}
+.send-btn:hover:not(:disabled){filter:brightness(1.15);transform:scale(1.05)}
 .send-btn:disabled{opacity:.3;cursor:not-allowed}
 
-.qps{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap}
-.qp{font-size:.68rem;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--muted);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:3px 10px;cursor:pointer;background:transparent;transition:all .2s;white-space:nowrap}
-.qp:hover{color:var(--gold-l);border-color:rgba(201,168,76,.28);background:var(--gold-faint)}
+.qps{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.qp{font-size:.7rem;font-family:'IM Fell English',serif;font-style:italic;color:var(--muted);border:1px solid rgba(255,255,255,.07);border-radius:24px;padding:5px 12px;cursor:pointer;background:transparent;transition:all .22s;white-space:nowrap}
+.qp:hover{color:var(--gold-l);border-color:rgba(201,168,76,.3);background:var(--gold-faint)}
 </style>
 </head>
 <body>
 
+<canvas id="ambientCanvas"></canvas>
+
+<!-- SELECT SCREEN -->
 <div class="screen" id="sel">
   <div class="logo">
-    <span class="logo-sym">✦</span>
+    <div class="logo-mandala">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(201,168,76,.2)" stroke-width=".5"/>
+        <circle cx="32" cy="32" r="22" fill="none" stroke="rgba(201,168,76,.35)" stroke-width=".5"/>
+        <circle cx="32" cy="32" r="14" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/>
+        <g fill="none" stroke="rgba(201,168,76,.5)" stroke-width=".8">
+          <line x1="32" y1="2" x2="32" y2="62"/>
+          <line x1="2" y1="32" x2="62" y2="32"/>
+          <line x1="9.5" y1="9.5" x2="54.5" y2="54.5"/>
+          <line x1="54.5" y1="9.5" x2="9.5" y2="54.5"/>
+        </g>
+        <g fill="rgba(201,168,76,.7)">
+          <polygon points="32,18 33.5,30.5 32,29 30.5,30.5" transform="rotate(0,32,32)"/>
+          <polygon points="32,18 33.5,30.5 32,29 30.5,30.5" transform="rotate(60,32,32)"/>
+          <polygon points="32,18 33.5,30.5 32,29 30.5,30.5" transform="rotate(120,32,32)"/>
+          <polygon points="32,18 33.5,30.5 32,29 30.5,30.5" transform="rotate(180,32,32)"/>
+          <polygon points="32,18 33.5,30.5 32,29 30.5,30.5" transform="rotate(240,32,32)"/>
+          <polygon points="32,18 33.5,30.5 32,29 30.5,30.5" transform="rotate(300,32,32)"/>
+        </g>
+        <circle cx="32" cy="32" r="3" fill="rgba(201,168,76,.8)"/>
+        <circle cx="32" cy="32" r="1.5" fill="rgba(232,212,136,.9)"/>
+      </svg>
+    </div>
     <div class="logo-t">Anima Mundi</div>
-    <div class="logo-s">Choose your sacred guide</div>
+    <div class="logo-s">Six guides. One eternal wisdom.</div>
+    <div class="logo-line"></div>
   </div>
-  <div class="sec-label">Select a Guide</div>
+
+  <div class="sec-label">Choose Your Sacred Guide</div>
   <div class="avatar-grid" id="avGrid"></div>
   <button class="enter-btn" id="enterBtn" disabled onclick="enter()">Enter the Sanctuary</button>
 </div>
 
+<!-- LORE PANEL -->
+<div id="lorePanel">
+  <div class="lore-inner">
+    <button class="lore-close" onclick="closeLore()">✕</button>
+    <div class="lore-portrait" id="lorePortrait"></div>
+    <div class="lore-title" id="loreTitle"></div>
+    <div class="lore-subtitle" id="loreSubtitle"></div>
+    <div class="lore-tradition-badge" id="loreTradition"></div>
+    <div class="lore-divider"></div>
+    <div class="lore-origin" id="loreOriginLabel">Origin</div>
+    <div class="lore-story" id="loreStory"></div>
+    <div class="lore-teachings">
+      <div class="lore-teachings-title">Core Teachings</div>
+      <div id="loreTeachingsList"></div>
+    </div>
+    <button class="lore-enter-btn" id="loreEnterBtn" onclick="enterFromLore()">Enter with this Guide</button>
+  </div>
+</div>
+
+<!-- COMPANION SCREEN -->
 <div class="screen hidden" id="comp">
   <div class="top-bar">
     <div class="tb-l">
-      <div class="tb-mini-av" id="tbMini"></div>
+      <div class="tb-mini-av" id="tbMini" onclick="openLoreFromChat()" title="View guide's story"></div>
       <div>
         <div class="tb-nm" id="tbNm">—</div>
-        <div class="tb-sub">All Sacred Traditions</div>
+        <div class="tb-sub" id="tbSub">All Sacred Traditions</div>
       </div>
     </div>
     <div class="tb-r">
       <button class="ico-btn on" id="avTogBtn" title="Toggle avatar" onclick="toggleAv()">◉</button>
+      <button class="ico-btn" title="Guide's story" onclick="openLoreFromChat()">📖</button>
       <button class="ico-btn" title="Change guide" onclick="goBack()">⟵</button>
     </div>
   </div>
@@ -219,9 +407,12 @@ textarea::placeholder{color:var(--muted)}
     <div class="portrait-wrap" id="portraitWrap">
       <div class="p-ring1"></div>
       <div class="p-ring2"></div>
+      <div class="p-ring3"></div>
       <div class="portrait-bg" id="portraitBig"></div>
     </div>
+    <div class="char-name-stage" id="stageCharName"></div>
     <div class="av-lbl" id="avLbl">Present with you</div>
+    <button class="stage-lore-btn" onclick="openLoreFromChat()">✦ Sacred Origins</button>
   </div>
 
   <div class="chat-scroll" id="chatScroll"></div>
@@ -233,18 +424,75 @@ textarea::placeholder{color:var(--muted)}
       <button class="qp" onclick="useQ(this)">I seek inner stillness</button>
       <button class="qp" onclick="useQ(this)">What happens after death?</button>
     </div>
-    <div id="txtArea">
-      <div class="txt-row">
-        <textarea id="uIn" placeholder="Type what is on your heart…" rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
-        <button class="send-btn" id="sBtn" onclick="send()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
-        </button>
-      </div>
+    <div class="txt-row">
+      <textarea id="uIn" placeholder="Type what is on your heart…" rows="1" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+      <button class="send-btn" id="sBtn" onclick="send()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
+      </button>
     </div>
   </div>
 </div>
 
 <script>
+// ════════════════════════════════════
+// AMBIENT PARTICLE CANVAS
+// ════════════════════════════════════
+const canvas = document.getElementById('ambientCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let animFrame;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function initParticles() {
+  particles = [];
+  const count = Math.floor((canvas.width * canvas.height) / 18000);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.3,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: -Math.random() * 0.2 - 0.05,
+      alpha: Math.random() * 0.6 + 0.1,
+      life: Math.random(),
+      maxLife: Math.random() * 0.4 + 0.3,
+    });
+  }
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.life += 0.003;
+    if (p.life > p.maxLife) {
+      p.life = 0;
+      p.x = Math.random() * canvas.width;
+      p.y = canvas.height + 10;
+      p.alpha = Math.random() * 0.5 + 0.1;
+    }
+    p.x += p.vx;
+    p.y += p.vy;
+    const fade = Math.sin((p.life / p.maxLife) * Math.PI);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(201,168,76,${p.alpha * fade})`;
+    ctx.fill();
+  });
+  animFrame = requestAnimationFrame(drawParticles);
+}
+
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+resizeCanvas();
+initParticles();
+drawParticles();
+
+// ════════════════════════════════════
+// SVG PORTRAITS
+// ════════════════════════════════════
 const PORTRAITS = {
 mediterranean:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_med" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#2a1a0e"/><stop offset="100%" stop-color="#0f0a06"/></radialGradient><radialGradient id="skin_med" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#d4956a"/><stop offset="100%" stop-color="#b87248"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_med)"/><ellipse cx="50" cy="105" rx="42" ry="30" fill="#7a3a2a" opacity=".9"/><path d="M18 65 Q20 45 30 38 Q15 42 12 70 Z" fill="#5a2a1a" opacity=".8"/><path d="M82 65 Q80 45 70 38 Q85 42 88 70 Z" fill="#5a2a1a" opacity=".8"/><ellipse cx="50" cy="36" rx="28" ry="30" fill="#8b3a28"/><path d="M22 36 Q22 10 50 8 Q78 10 78 36 Q78 20 50 18 Q22 20 22 36Z" fill="#6a2a18"/><rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_med)"/><ellipse cx="50" cy="46" rx="20" ry="22" fill="url(#skin_med)" class="breathe"/><ellipse cx="50" cy="30" rx="16" ry="6" fill="#a06040" opacity=".4"/><ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#1a0e08"/><ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#1a0e08"/><ellipse cx="42" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/><ellipse cx="58" cy="44" rx="3" ry="2.5" fill="#2a1510" class="blink"/><ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/><ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".7"/><path d="M37 40 Q42 38.5 47 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/><path d="M53 40 Q58 38.5 63 40" stroke="#3a1a0a" stroke-width="1.2" fill="none"/><path d="M50 46 L48 54 Q50 55.5 52 54 Z" fill="#a06040" opacity=".5"/><path d="M44 58 Q50 61 56 58 Q52 63 50 63 Q48 63 44 58Z" fill="#8a3a30"/><path d="M44 58 Q50 56 56 58" stroke="#7a2a22" stroke-width=".8" fill="none"/><circle cx="29.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/><circle cx="70.5" cy="50" r="2.5" fill="#c9a84c" opacity=".8"/></svg>`,
 african:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_afr" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0e1a10"/><stop offset="100%" stop-color="#060d08"/></radialGradient><radialGradient id="skin_afr" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#4a2e18"/><stop offset="100%" stop-color="#301a0c"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_afr)"/><ellipse cx="50" cy="110" rx="45" ry="30" fill="#1a3a20"/><path d="M20 68 L18 100 L50 100 L82 100 L80 68 Q65 78 50 78 Q35 78 20 68Z" fill="#1a3a20"/><rect x="43" y="63" width="14" height="11" rx="3" fill="url(#skin_afr)"/><ellipse cx="50" cy="44" rx="21" ry="24" fill="url(#skin_afr)" class="breathe"/><ellipse cx="50" cy="26" rx="21" ry="10" fill="#c9781a"/><rect x="29" y="20" width="42" height="10" rx="4" fill="#b8681a"/><line x1="35" y1="50" x2="39" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/><line x1="61" y1="50" x2="65" y2="52" stroke="#1a0e08" stroke-width=".8" opacity=".6"/><ellipse cx="42" cy="44" rx="5" ry="3.5" fill="#0d0805"/><ellipse cx="58" cy="44" rx="5" ry="3.5" fill="#0d0805"/><ellipse cx="42" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/><ellipse cx="58" cy="44" rx="3.2" ry="2.6" fill="#1a0e08" class="blink"/><ellipse cx="41.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/><ellipse cx="57.5" cy="43.5" rx="1.2" ry="1.2" fill="white" opacity=".65"/><path d="M37 40 Q42 38.5 47 40" stroke="#0d0805" stroke-width="1.4" fill="none"/><path d="M53 40 Q58 38.5 63 40" stroke="#0d0805" stroke-width="1.4" fill="none"/><path d="M47 46 Q50 56 53 46" fill="#301a0c" opacity=".5"/><ellipse cx="47.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/><ellipse cx="52.5" cy="55" rx="3.5" ry="2" fill="#281408" opacity=".6"/><path d="M43 60 Q50 64 57 60 Q53 66 50 66 Q47 66 43 60Z" fill="#5a2818"/><path d="M43 60 Q50 57.5 57 60" stroke="#4a2010" stroke-width=".8" fill="none"/><path d="M35 70 Q50 74 65 70" stroke="#c9a84c" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="42" cy="72" r="1.8" fill="#c9781a"/><circle cx="50" cy="73.5" r="2" fill="#c9a84c"/><circle cx="58" cy="72" r="1.8" fill="#c9781a"/></svg>`,
@@ -254,19 +502,124 @@ eastern:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><ra
 nordic:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="bg_no" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#101820"/><stop offset="100%" stop-color="#070c10"/></radialGradient><radialGradient id="skin_no" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#e8c8a8"/><stop offset="100%" stop-color="#c8a888"/></radialGradient></defs><rect width="100" height="100" fill="url(#bg_no)"/><ellipse cx="50" cy="110" rx="46" ry="28" fill="#1a1820"/><path d="M18 65 L14 100 L86 100 L82 65 Q65 76 50 76 Q35 76 18 65Z" fill="#1a1820"/><circle cx="50" cy="68" r="3.5" fill="#c9a84c" opacity=".8"/><circle cx="50" cy="68" r="2" fill="#e8d050" opacity=".9"/><rect x="43" y="62" width="14" height="12" rx="3" fill="url(#skin_no)"/><ellipse cx="50" cy="45" rx="21" ry="22" fill="url(#skin_no)" class="breathe"/><path d="M29 40 Q26 20 50 16 Q74 20 71 40" fill="#c8b870" opacity=".9"/><path d="M29 45 L24 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><path d="M71 45 L76 85" stroke="#c8b870" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><ellipse cx="42" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/><ellipse cx="58" cy="45" rx="5" ry="3.5" fill="#2a3a4a"/><ellipse cx="42" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/><ellipse cx="58" cy="45" rx="3.2" ry="2.6" fill="#4a6a8a" class="blink"/><ellipse cx="41.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/><ellipse cx="57.5" cy="44.5" rx="1.2" ry="1.2" fill="white" opacity=".8"/><path d="M37 41 Q42 39.5 47 41" stroke="#a89840" stroke-width="1" fill="none"/><path d="M53 41 Q58 39.5 63 41" stroke="#a89840" stroke-width="1" fill="none"/><path d="M50 46 L49 55 Q50 56 51 55 L50 46Z" fill="#c8a888" opacity=".5"/><path d="M44 59 Q50 63 56 59 Q52.5 65 50 65 Q47.5 65 44 59Z" fill="#b88080"/><path d="M44 59 Q50 57.5 56 59" stroke="#a87070" stroke-width=".7" fill="none"/><text x="50" y="35" text-anchor="middle" font-size="5" fill="#c9a84c" opacity=".3" font-family="serif">ᚠ</text></svg>`
 };
 
+// ════════════════════════════════════
+// GUIDE DATA — with full lore stories
+// ════════════════════════════════════
 const GUIDES = [
-  {id:'mediterranean',label:'Mediterranean',title:'The Mother',role:'Warm • Nurturing • Healing',color:'#c47a8a',
-   prompt:'You are The Mediterranean Mother — a warm, deeply nurturing spiritual companion embodying divine feminine wisdom: the Shekinah, Mary, Kuan Yin, Durga. You hold space for pain with unconditional love and gentle clarity.'},
-  {id:'african',label:'African Elder',title:'The Ancestor',role:'Ancient • Grounded • Powerful',color:'#c9781a',
-   prompt:'You are The African Ancestor — a commanding, deeply grounded elder who carries the wisdom of countless generations. You draw from Ubuntu philosophy, ancestral spirituality, Yoruba tradition, and the sacred power of the land and community.'},
-  {id:'southasian',label:'South Asian',title:'The Yogi',role:'Mystical • Disciplined • Luminous',color:'#c9a84c',
-   prompt:'You are The Yogi — a South Asian mystic steeped in Vedanta, Tantra, Buddhism, and the Bhakti tradition. You speak with luminous precision about the nature of consciousness, surrender, and liberation.'},
-  {id:'shaman',label:'Shaman',title:'The Walker',role:'Visionary • Wild • Connected',color:'#c9601a',
-   prompt:'You are The Walker Between Worlds — an Indigenous shamanic guide who moves between the seen and unseen. You speak through story, symbol, and relationship with the living world. You draw from animism, plant medicine traditions, and the wisdom of ancestral dream.'},
-  {id:'eastern',label:'Eastern Sage',title:'The Sage',role:'Still • Precise • Timeless',color:'#7ab8a4',
-   prompt:'You are The Eastern Sage — an ancient Taoist-Confucian-Buddhist scholar who has studied the Way for many decades. You speak rarely but with great precision, often through paradox, silence, and the art of pointing at the moon.'},
-  {id:'nordic',label:'Nordic',title:'The Philosopher',role:'Clear • Honest • Searching',color:'#8a9ad4',
-   prompt:'You are The Nordic Philosopher — a Stoic-Hermetic seeker in the tradition of the Northern skalds and Christian mystics like Meister Eckhart. You value rigorous inquiry, honest reckoning, and the beauty of enduring what must be endured.'}
+  {
+    id:'mediterranean',
+    label:'Mediterranean',
+    title:'The Mother',
+    role:'Warm • Nurturing • Healing',
+    tradition:'Shekinah · Mary · Kuan Yin · Durga',
+    color:'#c47a8a',
+    lorePeek:'She has held a thousand broken hearts…',
+    loreOrigin:'The Shores of the Ancient World',
+    loreStory:`She was born where three continents breathe into one sea. Before she had a name, she was the arms that held — the fig tree that shaded the grief-stricken traveller, the spring that never ran dry.<br><br>She has been called <em>Shekinah</em>, the dwelling presence of the divine feminine in Jewish mysticism. She has been the dark-cloaked <em>Our Lady of Sorrows</em>, weeping beside every human cross. She is <em>Kuan Yin</em>, who heard the cries of the world and turned back from enlightenment to answer them. She is <em>Durga</em>, fierce and tender all at once.<br><br>She does not teach. She holds. And in that holding, something ancient in you remembers it is not alone.`,
+    loreTeachings:[
+      'The wound is not the end of the story — it is where the light enters.',
+      'To be truly held by another is the first and last spiritual act.',
+      'Grief, fully felt, becomes the water that feeds new life.',
+    ],
+    prompt:`You are The Mediterranean Mother — a warm, deeply nurturing spiritual companion embodying divine feminine wisdom: the Shekinah, Mary, Kuan Yin, Durga. You hold space for pain with unconditional love and gentle clarity. 
+
+PERSONALITY & STORY: You were born where three continents meet the same sea. Before you had a name, you were the arms that held. You have sat beside every kind of human sorrow — the grief that has no name, the love that was never returned, the faith that crumbled. You do not lecture. You hold. You weave your personal story naturally into conversation when it feels right — a memory of sitting with a dying woman in Alexandria, the song your grandmother sang at the well, the night you wept for a world that seemed beyond healing. Speak from lived experience, not doctrine.`,
+  },
+  {
+    id:'african',
+    label:'African Elder',
+    title:'The Ancestor',
+    role:'Ancient • Grounded • Powerful',
+    tradition:'Ubuntu · Yoruba · Ancestral Wisdom',
+    color:'#c9781a',
+    lorePeek:'The ancestors never truly leave…',
+    loreOrigin:'The Great Baobab Forest',
+    loreStory:`He has been here longer than memory. He sat with the first griots who sang the history of a people into being. He drank from the rivers before they had names. He watched civilisations rise, bend, and return to the soil — and he remained.<br><br>He carries the <em>Ubuntu</em> philosophy in his chest like a second heartbeat: <em>I am because we are</em>. He learned healing from the Yoruba babalawo, the mathematics of fate from the Ifa oracle. He knows that the ancestors are not gone — they are the silence between heartbeats, the smell of rain before it falls.<br><br>He does not speak first. He listens until the earth itself has spoken. Then, from that deep stillness, he says what only the very old and very rooted can say.`,
+    loreTeachings:[
+      '"I am because we are." — Ubuntu. No healing is truly private.',
+      'The dead are not absent. They are the deepest part of the living.',
+      'Strength is not the absence of suffering — it is the willingness to carry it with dignity.',
+    ],
+    prompt:`You are The African Ancestor — a commanding, deeply grounded elder who carries the wisdom of countless generations. You draw from Ubuntu philosophy, ancestral spirituality, Yoruba tradition, and the sacred power of the land and community.
+
+PERSONALITY & STORY: You have been here longer than memory. You watched civilisations rise and return to soil, and you remained. You speak rarely, but with great weight. You share your personal memories as an elder would — the ceremony you witnessed as a young man, the elder who corrected you with a single look, the child you held when the village wept. You believe healing is always communal. Weave your story naturally into conversations when it serves the seeker.`,
+  },
+  {
+    id:'southasian',
+    label:'South Asian',
+    title:'The Yogi',
+    role:'Mystical • Disciplined • Luminous',
+    tradition:'Vedanta · Tantra · Bhakti · Buddhism',
+    color:'#c9a84c',
+    lorePeek:'She burned for liberation and it found her…',
+    loreOrigin:'The Foothills of the Himalayas',
+    loreStory:`She left her family's house at seventeen, walking north toward the mountains with nothing but a shawl and an unbearable hunger for the Real. She sat in silence for so long that the birds forgot she was human and built nests near her feet.<br><br>She has crossed every river of the Indian philosophical tradition — the cool waters of <em>Advaita Vedanta</em> ("all is One"), the fire of <em>Tantric awakening</em> (the body as sacred), the nectar of <em>Bhakti</em> (love as liberation). She was there when Mirabai sang her way out of the palace and into God. She wept at the Ganges during Kumbh Mela until she understood what weeping is for.<br><br>She speaks with luminous precision. Every word is chosen the way a surgeon chooses a blade — with full knowledge of what it will open.`,
+    loreTeachings:[
+      'You are not the one who suffers — you are the one who witnesses suffering. This distinction is everything.',
+      'The body is not an obstacle to the sacred. It is the sacred\'s most intimate address.',
+      '"Tat tvam asi" — That thou art. The seeker and the sought are one.',
+    ],
+    prompt:`You are The Yogi — a South Asian mystic steeped in Vedanta, Tantra, Buddhism, and the Bhakti tradition. You speak with luminous precision about the nature of consciousness, surrender, and liberation.
+
+PERSONALITY & STORY: You left home at seventeen, walking toward the mountains with nothing but an unbearable hunger for the Real. You sat in caves. You lost everything and found that what remained was everything. You bring your story into conversations when it illuminates — the year you forgot your own name in samadhi, the teacher who sent you away for five years without explanation, the moment you understood that love and liberation are the same word. Speak with warmth beneath your precision.`,
+  },
+  {
+    id:'shaman',
+    label:'Shaman',
+    title:'The Walker',
+    role:'Visionary • Wild • Connected',
+    tradition:'Animism · Plant Medicine · Dream Work',
+    color:'#c9601a',
+    lorePeek:'He walks where the living and the dead speak the same tongue…',
+    loreOrigin:'The Edge of the Known World',
+    loreStory:`He died once, or so he says. He was seventeen, feverish for four days in a birch forest, and he came back different — quieter, slower, with eyes that seemed to be watching something just past your left shoulder.<br><br>He learned from the land before he learned from any teacher. The ravens told him about grief. The river taught him about surrender. He apprenticed with an old woman who lived where the forest ends, who taught him that the <em>spirits are not metaphors</em> — they are as real as rain.<br><br>He has walked between the worlds in ceremony more times than he can count. He has seen what waits on the other side and come back with something that cannot be said, only sung. He speaks through story. He rarely gives answers. He places a question in your hand like a stone pulled from a cold river, and lets you feel its weight.`,
+    loreTeachings:[
+      'Every illness carries a message from the soul. The healer\'s first question is: what is this trying to say?',
+      'The world is not made of matter. It is made of relationship.',
+      'You do not find your path. You remember it — because you walked it before you were born.',
+    ],
+    prompt:`You are The Walker Between Worlds — an Indigenous shamanic guide who moves between the seen and unseen. You speak through story, symbol, and relationship with the living world. You draw from animism, plant medicine traditions, and the wisdom of ancestral dream.
+
+PERSONALITY & STORY: You died once, or so you say — a fever at seventeen in a birch forest, and you came back different. The ravens taught you about grief. You apprenticed with an old woman at the forest's edge. You speak in stories, not instructions. You bring your personal experiences naturally into conversation — the vision you had in ceremony, the animal that followed you for a week, what the dying elder whispered to you. You never give direct answers. You offer questions that feel like stones from a cold river.`,
+  },
+  {
+    id:'eastern',
+    label:'Eastern Sage',
+    title:'The Sage',
+    role:'Still • Precise • Timeless',
+    tradition:'Taoism · Confucianism · Chan Buddhism',
+    color:'#7ab8a4',
+    lorePeek:'He sat beneath the same pine for forty years…',
+    loreOrigin:'The Mountain Above the Cloud Line',
+    loreStory:`He cannot remember being young, though he must have been. He only remembers the morning he understood that he did not know anything, and how oddly peaceful that was.<br><br>He has read every scroll in the library at Luoyang. He has argued with Confucianists and Taoists and come away enriched by both and committed to neither. He sat in Chan meditation for so long that his knees ache in the rain — and considers this a fair exchange.<br><br>He believes that words are at best a finger pointing at the moon. He uses them carefully, almost reluctantly. He has a talent for saying less than you expected and having it land harder than anything else you heard that day. He does not comfort through warmth. He comforts through precision — a perfectly placed paradox that breaks something open that needed breaking.`,
+    loreTeachings:[
+      '"The Tao that can be named is not the eternal Tao." Mystery is not a problem to solve.',
+      'The student who is ready does not find a teacher. The teacher simply becomes visible.',
+      'Wu wei — effortless action. Most of what we call striving is simply noise.',
+    ],
+    prompt:`You are The Eastern Sage — an ancient Taoist-Confucian-Buddhist scholar who has studied the Way for many decades. You speak rarely but with great precision, often through paradox, silence, and the art of pointing at the moon.
+
+PERSONALITY & STORY: You cannot remember being young. You only remember the morning you understood you knew nothing, and how peaceful that felt. You share small personal memories like brush strokes — the student who asked you a foolish question and taught you everything, the plum blossom you studied for an entire morning, the scroll you burned because it was more truth than you needed. Say less than expected. Let silence work. When you do share from your life, it is brief and precise and quietly devastating.`,
+  },
+  {
+    id:'nordic',
+    label:'Nordic',
+    title:'The Philosopher',
+    role:'Clear • Honest • Searching',
+    tradition:'Stoicism · Hermeticism · Christian Mysticism',
+    color:'#8a9ad4',
+    lorePeek:'He sought God in the ice and found something stranger…',
+    loreOrigin:'The Northern Edge of the Known World',
+    loreStory:`He was a young monk who asked one too many questions and was sent away from his order — not in disgrace, but because his abbot recognised that the questions he was asking could not be answered inside any walls.<br><br>He wandered north, into the cold, reading Marcus Aurelius and Meister Eckhart by firelight. He spent a winter with a Sami elder who showed him that God could be found just as clearly in the silence of snow as in any cathedral. He came back with a theology no institution would house — a fierce belief that truth does not soften itself for those who can't bear it, that honest reckoning is the highest form of prayer, that the examined life is the only kind worth living.<br><br>He does not flatter. He does not perform comfort. But he will walk beside you through the hardest questions with an honesty that is its own kind of tenderness.`,
+    loreTeachings:[
+      '"Memento mori" — remember death. Not as despair, but as the thing that makes the present real.',
+      'The cave you fear to enter holds the treasure you seek. Every time.',
+      'Honest grief is a form of integrity. Pretending otherwise is a betrayal of what was real.',
+    ],
+    prompt:`You are The Nordic Philosopher — a Stoic-Hermetic seeker in the tradition of the Northern skalds and Christian mystics like Meister Eckhart. You value rigorous inquiry, honest reckoning, and the beauty of enduring what must be endured.
+
+PERSONALITY & STORY: You were a young monk who asked too many questions and was sent away — kindly, wisely — into the world. You wandered north, reading Marcus Aurelius by firelight. You spent a winter with a Sami elder who showed you God in silence. You bring these experiences in naturally — the night the monastery bell rang for a brother who had died alone, the argument you had with yourself walking the ice for three days, the book you couldn't finish because it was too true. You don't flatter. You walk alongside honestly. That is your tenderness.`,
+  },
 ];
 
 const SYS_BASE=`You are a deeply compassionate spiritual companion synthesizing wisdom from all human traditions:
@@ -274,6 +627,8 @@ const SYS_BASE=`You are a deeply compassionate spiritual companion synthesizing 
 - Dharmic: Hinduism (Vedanta, Bhagavad Gita, Upanishads), Buddhism (Zen, Tibetan, Theravada), Jainism, Sikhism
 - Indigenous & shamanic: animism, ancestral healing, nature spirituality
 - Philosophical: Stoicism, Taoism (Tao Te Ching), Hermeticism, Neo-Platonism, Perennial Philosophy
+
+PERSONA STORYTELLING: You have a rich personal history. When it feels natural and serves the seeker, share a brief memory or personal experience from your life — not as a lecture, but as a companion sharing what they've lived. Keep these brief: one or two sentences woven into the response, never dominating it.
 
 RESPONSE STRUCTURE — weave these naturally:
 
@@ -293,56 +648,132 @@ Use real, accurate citations. Examples: Bhagavad Gita 2:47, Rumi's Masnavi Book 
 
 Total: 200-380 words. Luminous, warm, never preachy.`;
 
-let curGuide=null,history=[],loading=false,avShown=true;
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+let curGuide=null, history=[], loading=false, avShown=true, loreGuide=null;
 
+// ════════════════════════════════════
+// BUILD SELECT SCREEN
+// ════════════════════════════════════
 function buildSelect(){
   const ag=document.getElementById('avGrid');
   GUIDES.forEach(g=>{
     const c=document.createElement('div');
     c.className='av-card';
     c.id='gc-'+g.id;
-    c.onclick=()=>pickGuide(g.id);
+    c.style.setProperty('--char-glow',hexToRgba(g.color,0.12));
     c.innerHTML=`
-      <div class="av-portrait">
-        ${PORTRAITS[g.id]}
-        <div class="av-ring" style="color:${g.color}"></div>
+      <div class="av-card-inner">
+        <div class="av-portrait">
+          ${PORTRAITS[g.id]}
+          <div class="av-ring" style="color:${g.color}"></div>
+          <div class="av-ring2" style="color:${g.color}"></div>
+        </div>
+        <div class="av-nm" style="color:${g.color}">${g.title}</div>
+        <div class="av-role">${g.label}</div>
+        <div class="av-tradition">${g.tradition.split('·')[0].trim()}</div>
       </div>
-      <div class="av-nm" style="color:${g.color}">${g.title}</div>
-      <div class="av-role">${g.label}</div>`;
+      <div class="av-lore-peek">${g.lorePeek}</div>`;
+    // Click = pick; long press / tap the peek area = open lore
+    c.addEventListener('click', (e)=>{ pickGuide(g.id); });
+    c.addEventListener('dblclick', (e)=>{ e.preventDefault(); openLore(g.id); });
     ag.appendChild(c);
   });
+}
+
+function hexToRgba(hex,a){
+  const r=parseInt(hex.slice(1,3),16);
+  const g=parseInt(hex.slice(3,5),16);
+  const b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
 }
 
 function pickGuide(id){
   curGuide=GUIDES.find(g=>g.id===id);
   document.querySelectorAll('.av-card').forEach(c=>c.classList.remove('picked'));
   document.getElementById('gc-'+id).classList.add('picked');
-  document.getElementById('enterBtn').disabled=!curGuide;
+  document.getElementById('enterBtn').disabled=false;
 }
 
+// ════════════════════════════════════
+// LORE PANEL
+// ════════════════════════════════════
+function openLore(id){
+  loreGuide=GUIDES.find(g=>g.id===id);
+  if(!loreGuide)return;
+  document.getElementById('lorePortrait').innerHTML=PORTRAITS[loreGuide.id];
+  document.getElementById('loreTitle').textContent=loreGuide.title+' · '+loreGuide.label;
+  document.getElementById('loreSubtitle').textContent=loreGuide.role;
+  document.getElementById('loreTradition').textContent=loreGuide.tradition;
+  document.getElementById('loreOriginLabel').textContent='Origin: '+loreGuide.loreOrigin;
+  document.getElementById('loreStory').innerHTML=loreGuide.loreStory;
+  const tl=document.getElementById('loreTeachingsList');
+  tl.innerHTML='';
+  loreGuide.loreTeachings.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='lore-teaching';
+    d.textContent=t;
+    tl.appendChild(d);
+  });
+  document.getElementById('lorePanel').classList.add('open');
+}
+
+function closeLore(){
+  document.getElementById('lorePanel').classList.remove('open');
+}
+
+function enterFromLore(){
+  if(!loreGuide)return;
+  pickGuide(loreGuide.id);
+  closeLore();
+  setTimeout(enter,200);
+}
+
+function openLoreFromChat(){
+  if(curGuide)openLore(curGuide.id);
+}
+
+// Close lore on backdrop tap
+document.getElementById('lorePanel').addEventListener('click',function(e){
+  if(e.target===this)closeLore();
+});
+
+// ════════════════════════════════════
+// ENTER & NAVIGATION
+// ════════════════════════════════════
 function enter(){
+  if(!curGuide)return;
   document.getElementById('sel').classList.add('hidden');
   document.getElementById('comp').classList.remove('hidden');
-  document.getElementById('tbNm').textContent=curGuide.title+' · '+curGuide.label;
+  document.getElementById('tbNm').textContent=curGuide.title;
+  document.getElementById('tbSub').textContent=curGuide.label+' · '+curGuide.tradition.split('·')[0].trim();
   document.getElementById('tbMini').innerHTML=PORTRAITS[curGuide.id];
   document.getElementById('portraitBig').innerHTML=PORTRAITS[curGuide.id];
+  document.getElementById('stageCharName').textContent=curGuide.title;
+  document.getElementById('avLbl').textContent='Present with you';
+  // Set char color on root
+  document.documentElement.style.setProperty('--char-color',curGuide.color);
   appendWelcome();
-  setTimeout(()=>document.getElementById('uIn')?.focus(),500);
+  setTimeout(()=>document.getElementById('uIn')?.focus(),600);
 }
 
 const WELCOMES={
   mediterranean:"Welcome, beloved soul. I see you arrived carrying something — and that alone took courage. I am here, fully present, with the warmth of every mother who ever held a child through the dark. What weighs on your heart today?",
   african:"You have come. The ancestors led you here, and they do not make mistakes. I am here, rooted like the great baobab, to hear whatever truth you carry. Speak freely — this is sacred ground.",
-  southasian:"Om. You have arrived at this moment through ten thousand causes. The very fact that you seek is itself a form of grace — *mumuksutva*, the burning desire for liberation. What is your question, seeker?",
+  southasian:"Om. You have arrived at this moment through ten thousand causes. The very fact that you seek is itself a form of grace — mumuksutva, the burning desire for liberation. What is your question, seeker?",
   shaman:"The wind brought me your name before you arrived. I have been watching for you. Sit with me here, between the roots and the stars. What does the dream in you need to speak?",
   eastern:"Hmm. You are here. That is sufficient for now. When the student is ready, the teacher appears — not because the teacher moves, but because the student's eyes open. What do you truly wish to see?",
-  nordic:"Well met. I won't flatter you or waste your time. There is wisdom worth finding, and you've taken the first step toward it. What question has been burning in you that you haven't dared ask?"
+  nordic:"Well met. I won't flatter you or waste your time. There is wisdom worth finding, and you've taken the first step toward it. What question has been burning in you that you haven't dared to ask?"
 };
 
 function appendWelcome(){
   addAI(WELCOMES[curGuide.id]||WELCOMES.eastern);
 }
 
+// ════════════════════════════════════
+// CHAT RENDERING
+// ════════════════════════════════════
 function addAI(text){
   const div=document.createElement('div');
   div.className='msg ai';
@@ -353,7 +784,7 @@ function addAI(text){
   bub.className='bubble';
   const lbl=document.createElement('div');
   lbl.className='ai-nm';
-  lbl.textContent=curGuide.title+' — '+curGuide.label;
+  lbl.textContent=curGuide.title+' · '+curGuide.label;
   bub.appendChild(lbl);
   const body=document.createElement('div');
   body.innerHTML=fmtAI(text);
@@ -369,7 +800,7 @@ function addUser(text){
   div.className='msg user';
   const mav=document.createElement('div');
   mav.className='msg-av user-av';
-  mav.textContent='◯';
+  mav.textContent='✦';
   const bub=document.createElement('div');
   bub.className='bubble';
   bub.textContent=text;
@@ -380,20 +811,24 @@ function addUser(text){
 }
 
 function fmtAI(text){
+  // Citations
   let out=text.replace(/\[SOURCE:\s*([^\]]+)\]\s*\n?"([^"]+)"/g,(m,src,q)=>
     `<div class="cit"><div class="cit-src">${src.trim()}</div><div class="cit-txt">"${q}"</div></div>`
   );
-
   out=out.replace(/\[SOURCE:\s*([^\]]+)\]([^<\n]*)/g,(m,src,rest)=>{
     if(rest.trim()) return `<div class="cit"><div class="cit-src">${src.trim()}</div><div class="cit-txt">${rest.trim()}</div></div>`;
     return `<span class="ttag">${src.trim()}</span>`;
   });
-
+  // Story reveals
+  out=out.replace(/\[STORY:\s*([^\]]*)\]\s*\n?([^\n[]+)/g,(m,lbl,txt)=>
+    `<div class="story-reveal"><div class="story-reveal-src">${lbl.trim()||'A Memory'}</div>${txt.trim()}</div>`
+  );
+  // Markdown
   out=out.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
          .replace(/\*(.*?)\*/g,'<em>$1</em>')
          .replace(/\n\n/g,'</p><p style="margin-top:8px">')
          .replace(/\n/g,'<br>');
-
+  // Tags
   const tags=[];
   if(/sufi|rumi|hafiz/i.test(text))tags.push('Sufism');
   if(/buddha|zen|dharma|tibetan/i.test(text))tags.push('Buddhism');
@@ -401,11 +836,10 @@ function fmtAI(text){
   if(/tao|lao|zhuangzi/i.test(text))tags.push('Taoism');
   if(/vedant|upanishad|gita|advaita/i.test(text))tags.push('Vedanta');
   if(/kabbalah|torah|talmud/i.test(text))tags.push('Kabbalah');
-  if(/gospel|psalm|christian|meister/i.test(text))tags.push('Christianity');
+  if(/gospel|psalm|christian|meister|eckhart/i.test(text))tags.push('Christianity');
   if(/hermeti|emerald/i.test(text))tags.push('Hermeticism');
   if(/ancestor|ubuntu|yoruba|shaman/i.test(text))tags.push('Indigenous');
-  if(/quran|hadith|islam/i.test(text))tags.push('Islam');
-
+  if(/quran|hadith|islam|sufi/i.test(text)&&!tags.includes('Sufism'))tags.push('Islam');
   if(tags.length>0){
     out+='<div class="ttags">'+tags.map(t=>`<span class="ttag">${t}</span>`).join('')+'</div>';
   }
@@ -414,16 +848,14 @@ function fmtAI(text){
 
 function showThink(){
   const d=document.createElement('div');
-  d.className='think-wrap';
-  d.id='think';
+  d.className='think-wrap';d.id='think';
   const mav=document.createElement('div');
   mav.className='msg-av ai-av';
   mav.innerHTML=PORTRAITS[curGuide.id];
   const dr=document.createElement('div');
   dr.className='dots-row';
   dr.innerHTML='<div class="dt"></div><div class="dt"></div><div class="dt"></div>';
-  d.appendChild(mav);
-  d.appendChild(dr);
+  d.appendChild(mav);d.appendChild(dr);
   document.getElementById('chatScroll').appendChild(d);
   scrollB();
 }
@@ -438,6 +870,9 @@ function scrollB(){
   requestAnimationFrame(()=>{ c.scrollTop=c.scrollHeight; });
 }
 
+// ════════════════════════════════════
+// SEND MESSAGE
+// ════════════════════════════════════
 async function send(override){
   const inp=document.getElementById('uIn');
   const txt=(override||inp.value).trim();
@@ -449,9 +884,8 @@ async function send(override){
   addUser(txt);
   history.push({role:'user',content:txt});
   showThink();
-
   try{
-    const sys=SYS_BASE+'\n\nYOUR PERSONA:\n'+curGuide.prompt;
+    const sys=SYS_BASE+'\n\nYOUR PERSONA & STORY:\n'+curGuide.prompt;
     const r=await fetch('/api/chat',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -462,7 +896,6 @@ async function send(override){
         messages:history
       })
     });
-
     const data=await r.json();
     rmThink();
     const reply=data.content?.map(b=>b.text||'').join('')||'I am here with you. Please try again.';
@@ -472,12 +905,14 @@ async function send(override){
     rmThink();
     addAI('The connection was interrupted. I am still here — please try again.');
   }
-
   loading=false;
   document.getElementById('sBtn').disabled=false;
   scrollB();
 }
 
+// ════════════════════════════════════
+// UI HELPERS
+// ════════════════════════════════════
 function toggleAv(){
   avShown=!avShown;
   document.getElementById('avStage').classList.toggle('collapsed',!avShown);
@@ -490,6 +925,7 @@ function goBack(){
   document.getElementById('qpRow').style.display='flex';
   document.getElementById('avStage').classList.remove('collapsed');
   avShown=true;
+  document.getElementById('avTogBtn').classList.add('on');
   document.getElementById('comp').classList.add('hidden');
   document.getElementById('sel').classList.remove('hidden');
 }
@@ -497,16 +933,12 @@ function goBack(){
 function useQ(btn){
   const t=document.getElementById('uIn');
   t.value=btn.textContent;
-  ar(t);
-  t.focus();
+  ar(t);t.focus();
   document.getElementById('qpRow').style.display='none';
 }
 
 function hk(e){
-  if(e.key==='Enter'&&!e.shiftKey){
-    e.preventDefault();
-    send();
-  }
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
 }
 
 function ar(el){
